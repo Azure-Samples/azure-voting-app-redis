@@ -32,11 +32,6 @@ metadata:
   name: azure-vote-front
 spec:
   replicas: 1
-  strategy:
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 1
-  minReadySeconds: 5 
   template:
     metadata:
       labels:
@@ -44,12 +39,7 @@ spec:
     spec:
       containers:
       - name: azure-vote-front
-        image: microsoft/azure-vote-front-redis:v1
-        resources:
-          requests:
-            cpu: 250m
-          limits:
-            cpu: 500m
+        image: microsoft/azure-vote-front:redis-v1
         ports:
         - containerPort: 80
         env:
