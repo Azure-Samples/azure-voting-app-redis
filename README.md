@@ -1,5 +1,12 @@
+# Azure Votign App
 
-# Contributing
+This sample creates a multi-container application in an Azure Container Service (ACS) Kubernetes cluster. The application interface has been build using Python / Flask. The data component is using Redis.
+
+To walk through a quick deployment of this application, see the ACS Kubernetes [quick start](https://docs.microsoft.com/en-us/azure/container-service/kubernetes/container-service-kubernetes-walkthrough).
+
+To walk through a complete experience where this code is packaged into container images, uploaded to Azure Container Registry, and then run in and ACS Kubernetes cluster, see the [ACS Kubernetes tutorials](https://docs.microsoft.com/en-us/azure/container-service/kubernetes/container-service-tutorial-kubernetes-prepare-app).
+
+## Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
 Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
