@@ -1,6 +1,6 @@
-# Azure Votign App
+# Azure Voting App
 
-This sample creates a multi-container application in an Azure Container Service (ACS) Kubernetes cluster. The application interface has been build using Python / Flask. The data component is using Redis.
+This sample creates a multi-container application in an Azure Container Service (ACS) Kubernetes cluster. The application interface has been built using Python / Flask. The data component is using Redis.
 
 To walk through a quick deployment of this application, see the ACS Kubernetes [quick start](https://docs.microsoft.com/en-us/azure/container-service/kubernetes/container-service-kubernetes-walkthrough).
 
