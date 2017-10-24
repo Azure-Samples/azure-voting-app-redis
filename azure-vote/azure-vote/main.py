@@ -28,8 +28,18 @@ if app.config['SHOWHOST'] == "true":
     title = socket.gethostname()
 
 # Init Redis
-r.set(button1,0)
-r.set(button2,0)
+try:
+    #Fetch existing score from Redis during scaling of front end 
+    #(Otherwise score resets while scaling web front end)
+    vote1 = r.get(button1).decode('utf-8')
+    vote2 = r.get(button2).decode('utf-8')
+    r.set(button1,int(vote1))
+    r.set(button2,int(vote2))
+except:
+    #Upon exception sets Redis counters to zero
+    r.set(button1,0)
+    r.set(button2,0)
+
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
