@@ -28,8 +28,8 @@ if app.config['SHOWHOST'] == "true":
     title = socket.gethostname()
 
 # Init Redis
-r.set(button1,0)
-r.set(button2,0)
+if not r.get(button1): r.set(button1,0)
+if not r.get(button2): r.set(button2,0)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
