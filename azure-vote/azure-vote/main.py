@@ -19,7 +19,7 @@ redis_server = os.environ['REDIS']
 # Redis Connection
 try:
     if "REDIS_PWD" in os.environ:
-        r = redis.Redis(host=redis_server,
+        r = redis.StrictRedis(host=redis_server,
                         port=6379, 
                         password=os.environ['REDIS_PWD'])
     else:
