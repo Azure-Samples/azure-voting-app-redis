@@ -7,11 +7,23 @@ import sys
 
 app = Flask(__name__)
 
-# Load configurations
+# Load configurations from environment or configu file
 app.config.from_pyfile('config_file.cfg')
-button1 =       app.config['VOTE1VALUE']  
-button2 =       app.config['VOTE2VALUE']
-title =         app.config['TITLE']
+
+if "VOTE1VALUE" in os.environ:
+    button1 = os.environ['VOTE1VALUE']
+else:
+    button1 = app.config['VOTE1VALUE']
+
+if "VOTE2VALUE" in os.environ:
+    button2 = os.environ['VOTE2VALUE']
+else:
+    button2 = app.config['VOTE2VALUE']
+
+if "TITLE" in os.environ:
+    title = os.environ['TITLE']
+else:
+    title = app.config['TITLE']
 
 # Redis configurations
 redis_server = os.environ['REDIS']
