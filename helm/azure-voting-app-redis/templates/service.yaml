@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "azure-voting-app-redis.fullname" . }}
+  namespace: {{ template "azure-voting-app-redis.name" . }}
+  labels:
+    app: {{ template "azure-voting-app-redis.name" . }}
+    chart: {{ template "azure-voting-app-redis.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ template "azure-voting-app-redis.name" . }}
+    release: {{ .Release.Name }}
