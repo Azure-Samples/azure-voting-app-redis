@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ template "azure-voting-app-redis.fullname" . }}
+  namespace: {{ template "azure-voting-app-redis.name" . }}
   labels:
     app: {{ template "azure-voting-app-redis.name" . }}
     chart: {{ template "azure-voting-app-redis.chart" . }}
