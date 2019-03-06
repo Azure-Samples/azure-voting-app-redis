@@ -13,10 +13,10 @@ then
     # Create a new virtual machine, this creates SSH keys if not present.
     az vm create --resource-group $resourceGroup --name $virtualMachine --admin-username $adminUser --image UbuntuLTS --generate-ssh-keys
 
-    # Open port 22 to allow web traffic to host.
+    # Open port 80 to allow web traffic to host.
     az vm open-port --port 80 --resource-group $resourceGroup --name $virtualMachine  --priority 101
 
-    # Open port 80 to allow web traffic to host.
+    # Open port 22 to allow ssh traffic to host.
     az vm open-port --port 22 --resource-group $resourceGroup --name $virtualMachine --priority 102
 
     # Open port 8080 to allow web traffic to host.
