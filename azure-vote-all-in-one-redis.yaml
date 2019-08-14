@@ -4,6 +4,9 @@ metadata:
   name: azure-vote-back
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: azure-vote-back
   template:
     metadata:
       labels:
@@ -14,6 +17,13 @@ spec:
       containers:
       - name: azure-vote-back
         image: redis
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 250m
+            memory: 256Mi
         ports:
         - containerPort: 6379
           name: redis
@@ -34,11 +44,9 @@ metadata:
   name: azure-vote-front
 spec:
   replicas: 1
-  strategy:
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 1
-  minReadySeconds: 5 
+  selector:
+    matchLabels:
+      app: azure-vote-front
   template:
     metadata:
       labels:
@@ -49,13 +57,15 @@ spec:
       containers:
       - name: azure-vote-front
         image: voteacrhong.azurecr.io/azure-vote-front:v1
-        ports:
-        - containerPort: 80
         resources:
           requests:
-            cpu: 250m
+            cpu: 100m
+            memory: 128Mi
           limits:
-            cpu: 500m
+            cpu: 250m
+            memory: 256Mi
+        ports:
+        - containerPort: 80
         env:
         - name: REDIS
           value: "azure-vote-back"
