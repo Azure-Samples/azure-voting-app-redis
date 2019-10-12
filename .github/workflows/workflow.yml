@@ -1,0 +1,45 @@
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    
+    - uses: Azure/docker-login@v1
+      with:
+        login-server: docker.pkg.github.com
+        username: ${{ github.actor }}
+        password: ${{ secrets.REGISTRY_PASSWORD }}
+    
+    - run: |
+        docker-compose build
+        docker tag azure-vote-front docker.pkg.github.com/bas/azure-voting-app-redis/azure-vote-front:${{ github.sha }}
+        docker push docker.pkg.github.com/bas/azure-voting-app-redis/azure-vote-front:${{ github.sha }}
+      
+    - uses: azure/aks-set-context@v1
+      with:
+        creds: '${{ secrets.AZURE_CREDENTIALS }}'
+        resource-group: '${{ github.actor }}-vote-grp'
+        cluster-name: '${{ github.actor }}-vote-aks'
+      id: login
+        
+    - uses: Azure/k8s-create-secret@v1
+      with:
+        container-registry-url: docker.pkg.github.com
+        container-registry-username: ${{ github.actor }}
+        container-registry-password: ${{ secrets.REGISTRY_PASSWORD }}
+        secret-name: azure-voting-app-secret
+
+    - uses: Azure/k8s-deploy@v1
+      with:
+        manifests: |
+          azure-vote-all-in-one-redis.yaml
+        images: |
+          docker.pkg.github.com/bas/azure-voting-app-redis/azure-vote-front:${{ github.sha }}
+        imagepullsecrets: |
+          azure-voting-app-secret
+    
+    - name: Get pods
+      run: | 
+        kubectl get service azure-vote-front

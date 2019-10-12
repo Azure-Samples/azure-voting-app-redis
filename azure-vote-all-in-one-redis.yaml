@@ -48,7 +48,7 @@ spec:
         "beta.kubernetes.io/os": linux
       containers:
       - name: azure-vote-front
-        image: microsoft/azure-vote-front:v1
+        image: docker.pkg.github.com/bas/azure-voting-app-redis/azure-vote-front:latest
         ports:
         - containerPort: 80
         resources:
@@ -65,6 +65,7 @@ kind: Service
 metadata:
   name: azure-vote-front
 spec:
+  loadBalancerIP: 13.80.5.128
   type: LoadBalancer
   ports:
   - port: 80
