@@ -1,0 +1,11 @@
+pipeline {
+   agent any
+
+   stages {
+      stage('Verify Branch') {
+         steps {
+            echo $GIT_BRANCH //Jenkins makes this variable for us at run time, as well as others for its own use
+         }
+      }
+   }
+}
