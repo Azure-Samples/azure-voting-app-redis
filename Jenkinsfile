@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Verify Git Branch') {
             steps {
-                echo  '${GIT_BRANCH}'
+                echo  env.GIT_BRANCH
             }
         }
 
@@ -12,7 +12,7 @@ pipeline {
             steps {
                 pwsh(script: 'docker images -a')
                 pwsh(script: """
-                cd azure-vote
+                cd azure-vote/
                 docker images -a
                 docker build -t jenkins-pipeline .
                 docker images -a
