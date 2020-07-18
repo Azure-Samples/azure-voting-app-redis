@@ -1,2 +1,6 @@
 class Test():
-    pass
+
+    def test(self):
+        pass
+
+Test().test()
