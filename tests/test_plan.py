@@ -1,6 +1,8 @@
 class Test():
 
     def test(self):
-        pass
+        print('Start of test')
+        print('End of test')
 
 Test().test()
+
