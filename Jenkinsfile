@@ -20,6 +20,42 @@ pipeline {
                 """)
             }
         }
+
+
+        stage('Start an App'){
+            steps {
+                pwsh(script: """
+                 echo $env.STAGE_NAME
+                """)
+            }
+            post {
+                success{
+                    echo "Scuccess"
+                }
+
+                failure {
+                    echo "Failuer"
+                }
+            }
+        }
+
+        stage('Run tests'){
+            steps {
+                pwsh(script: """
+                ./tests/test_plan.py
+                """)
+            }
+
+        }
+
+        stage('Stop test app'){
+            steps {
+                pwsh(script: """
+               echo $env.STAGE_NAME
+                """)
+            }
+
+        }
     
        
     }
