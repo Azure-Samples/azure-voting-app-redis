@@ -42,6 +42,7 @@ pipeline {
         stage('Run tests'){
             steps {
                 pwsh(script: """
+                echo $pwd
                 python ./tests/test_plan.py
                 """)
             }
