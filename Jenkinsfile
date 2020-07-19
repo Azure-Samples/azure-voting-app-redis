@@ -42,7 +42,7 @@ pipeline {
         stage('Run tests'){
             steps {
                 pwsh(script: """
-                echo $pwd
+                echo ${Get-Location}
                 python ./tests/test_plan.py
                 """)
             }
