@@ -41,6 +41,7 @@ pipeline {
 
         stage('Run tests'){
             steps {
+                echo "Workspace is $WORKSPACE"
                 pwsh(script: """
                 echo Get-Location
                 python ./tests/test_plan.py
