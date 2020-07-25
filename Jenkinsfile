@@ -42,9 +42,6 @@ pipeline {
         stage('Run tests'){
             steps {
                 echo "Workspace is $WORKSPACE"
-                pwsh(script: """
-                //python ./tests/test_plan.py
-                """)
             }
 
         }
