@@ -1,3 +1,4 @@
+
 pipeline {
     agent any
 
@@ -94,9 +95,8 @@ pipeline {
 }
 
 def traditional_int_for_loop() {
-    sh "echo Going to echo a list"
     for (int i = 0; i < 100; i++) {
         sleep(1)
-        sh "echo Hello ${i}"
+        echo "Hello ${i}"
     }
 }
