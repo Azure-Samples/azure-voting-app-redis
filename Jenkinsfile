@@ -73,7 +73,7 @@ pipeline {
 
         }
 
-        stage('Dummy step'){
+        stage('Dummy step i'){
             steps{
                 script {
                     for (int i=0; i < 100; i++){
@@ -86,7 +86,7 @@ pipeline {
             }
         }
 
-         stage('Dummy step'){
+         stage('Dummy step j'){
             steps{
                 script {
                     for (int j=0; j < 100; j++){
