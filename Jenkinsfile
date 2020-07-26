@@ -73,7 +73,8 @@ pipeline {
 
 
         }
-
+        stage('Parallel demo') {
+        parallel {
         stage('Dummy step i'){
             steps{
                 script {
@@ -89,6 +90,8 @@ pipeline {
                 }
             }
         }
+        }
+    }
     
        
     }
