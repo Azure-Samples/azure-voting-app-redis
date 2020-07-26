@@ -72,6 +72,32 @@ pipeline {
 
 
         }
+
+        stage('Dummy step'){
+            steps{
+                script {
+                    for (int i=0; i < 100; i++){
+
+                        sleep(1) {
+                            println(i)
+                        }
+                    }
+                }
+            }
+        }
+
+         stage('Dummy step'){
+            steps{
+                script {
+                    for (int j=0; j < 100; j++){
+
+                        sleep(1) {
+                            println(j)
+                        }
+                    }
+                }
+            }
+        }
     
        
     }
