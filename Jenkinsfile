@@ -92,6 +92,41 @@ pipeline {
         }
         }
     }
+
+    stage('Deploy to QA'){
+       environment {
+           ENVIRONMENT = 'QA'
+       }
+       steps {
+           echo "Deploying to $ENVIRONMENT"
+       }
+
+
+    }
+
+    stage ('Approve'){
+        when {
+            branch 'master'
+        }
+        options {
+            timeout(time:1, units: 'HOURS')
+
+        }
+        steps {
+            input message "Deploy?"
+        }
+    }
+
+      stage('Deploy to PROD'){
+       environment {
+           ENVIRONMENT = 'PROD'
+       }
+       steps {
+           echo "Deploying to $ENVIRONMENT"
+       }
+
+
+    }
     
        
     }
