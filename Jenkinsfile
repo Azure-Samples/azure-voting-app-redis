@@ -76,12 +76,7 @@ pipeline {
         stage('Dummy step i'){
             steps{
                 script {
-                    for (int i=0; i < 100; i++){
-
-                        sleep(1) {
-                            println(i)
-                        }
-                    }
+                    traditional_int_for_loop()
                 }
             }
         }
@@ -89,16 +84,19 @@ pipeline {
          stage('Dummy step j'){
             steps{
                 script {
-                    for (int j=0; j < 100; j++){
-
-                        sleep(1) {
-                            println(j)
-                        }
-                    }
+                     traditional_int_for_loop()
                 }
             }
         }
     
        
+    }
+}
+
+def traditional_int_for_loop() {
+    sh "echo Going to echo a list"
+    for (int i = 0; i < 100; i++) {
+        sleep(1)
+        sh "echo Hello ${i}"
     }
 }
