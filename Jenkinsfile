@@ -109,11 +109,11 @@ pipeline {
             branch 'master'
         }
         options {
-            timeout(time:1, units: 'HOURS')
+            timeout(time:1, unit: 'HOURS')
 
         }
         steps {
-            input message "Deploy?"
+            input message: "Deploy?"
         }
     }
 
