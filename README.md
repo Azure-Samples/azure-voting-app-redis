@@ -33,3 +33,5 @@ contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additio
 Applying commits to azure voting app redis
 
 azure triggering commit
+
+redis commit
