@@ -43,6 +43,13 @@ stages:
      
     - script: |
         pip3 install pytest
+        pytest azure-vote/azure-vote/tests/ --junitxml=junit/test-results.xml
+
+    - task: PublishTestResults@2
+      displayName: 'Publish Test Results'
+      inputs:
+        testResultsFiles: '**/test-results.xml'
+        testRunTitle: 'Python $(python.version)'
 
 - stage: build
   dependsOn: test
