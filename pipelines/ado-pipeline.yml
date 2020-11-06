@@ -23,94 +23,12 @@ variables:
 
 stages:
 
-- stage: test
-  dependsOn: []
-  
-  jobs:
-  - job: tests
-    pool:
-      vmImage: 'windows-latest'
-    continueOnError: false
-    timeoutInMinutes: 20
-
-    steps:
-
-    - task: PowerShell@2
-      displayName: Install Pester
-      inputs:
-        targetType: 'inline'
-        script: |
-          Find-Module pester | Install-Module -Force
-
-    - task: AzureCLI@1
-      displayName: Generate values file for test
-      inputs:
-        azureSubscription: $(azureSubscription)
-        scriptLocation: 'inlineScript'
-        inlineScript: |
-          pwsh ./deployment/helm-values/generate-config.ps1 -resourceGroup $(aks-cluster-rg-pre-prod) -sqlPwd Password2020! -gvaluesTemplate deployment/helm-values/gvalues.template -outputFile ./values.yaml
-
-    - task: PowerShell@2
-      displayName: Parse host name
-      inputs:
-        targetType: 'inline'
-        script: |
-          $content = Get-Content values.yaml
-          $hostName = $content[37].split(" ")[7]
-
-    - task: PowerShell@2
-      displayName: Run Pester tests
-      inputs:
-        targetType: 'inline'
-        script: 'invoke-pester -Script @{ Path = ''./ops40/demos/azure_pipeline/tests/''; Parameters = @{ hostName = ''$(hostDB)'' }} -OutputFile "./test-results.xml" -OutputFormat ''NUnitXML'''
-
-    - task: PublishTestResults@2
-      displayName: Publish test results
-      inputs:
-        testResultsFormat: 'NUnit'
-        testResultsFiles: '**/test-results.xml'
-        failTaskOnFailedTests: true
-
 - stage: build
   dependsOn: test
   condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
 
   jobs:
-  - job: helm
-    pool: Hosted Ubuntu 1604
-    continueOnError: false
-    timeoutInMinutes: 20
-    
-    steps:
-
-    - task: AzureCLI@1
-      displayName: 'AZ ACR Login'
-      inputs:
-        azureSubscription: $(azureSubscription)
-        scriptLocation: inlineScript
-        inlineScript: 'az acr login --name $(containerRegistryName)'
-
-    - task: HelmDeploy@0
-      displayName: 'helm init --client-only'
-      inputs:
-        connectionType: None
-        command: init
-        arguments: '--client-only'
-
-    - task: HelmDeploy@0
-      displayName: 'helm package (tt-cart)'
-      inputs:
-        command: package
-        chartPath: 'ops40/demos/tailwind-cart-api/cart-api'
-        arguments: '--version $(Build.BuildId)'
-
-    - task: AzureCLI@1
-      displayName: 'AZ ACR helm push (tt-cart)'
-      inputs:
-        azureSubscription: $(azureSubscription)
-        scriptLocation: inlineScript
-        inlineScript: 'az acr helm push -n $(containerRegistryName) /home/vsts/work/1/a/cart-api-$(Build.BuildId).tgz'
-
+  
   - job: docker
     pool: Hosted Ubuntu 1604
     continueOnError: false
