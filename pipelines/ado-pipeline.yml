@@ -10,16 +10,16 @@ variables:
   azureSubscription: azure-service-connection
 
   # Container Registry
-  containerRegistryName: ttacrtcedwbyyetsym.change-me
-  containerRegistryFqdn: ttacrtcedwbyyetsym.azurecr.io.change-me
+  containerRegistryName: acrpipelinedemo
+  containerRegistryFqdn: acrpipelinedemo.azurecr.io
 
   # AKS Pre-Production
-  aks-cluster-rg-pre-prod: sydney-ops.change-me
-  aks-cluster-pre-prod: tailwindtradersakstcedwbyyetsym.change-me
+  aks-cluster-rg-pre-prod: aks-pipeline-demo
+  aks-cluster-pre-prod: aks-pipeline-demo
 
   # Production
-  aks-cluster-rg: sydney-ops.change-me
-  aks-cluster: tailwindtradersakstcedwbyyetsym.change-me
+  aks-cluster-rg: aks-pipeline-demo
+  aks-cluster: aks-pipeline-demo
 
 stages:
 
@@ -36,12 +36,12 @@ stages:
 
     steps:
 
-    # - task: AzureCLI@1
-    #   displayName: 'AZ ACR Login'
-    #   inputs:
-    #     azureSubscription: $(azureSubscription)
-    #     scriptLocation: inlineScript
-    #     inlineScript: 'az acr login --name $(containerRegistryName)'
+    - task: AzureCLI@1
+      displayName: 'AZ ACR Login'
+      inputs:
+        azureSubscription: $(azureSubscription)
+        scriptLocation: inlineScript
+        inlineScript: 'az acr login --name $(containerRegistryName)'
 
     - task: CmdLine@2
       displayName: 'docker build (vote-front)'
@@ -50,11 +50,11 @@ stages:
           # cd ops40/demos/tailwind-cart-api/Tailwind.Traders.Cart.Api
           docker build -t $(containerRegistryFqdn)/cart.api:$(Build.BuildId) -f azure-vote/Dockerfile .
 
-    # - task: CmdLine@2
-    #   displayName: 'docker push (tt-web)'
-    #   inputs:
-    #     script: |
-    #       docker push $(containerRegistryFqdn)/cart.api:$(Build.BuildId)
+    - task: CmdLine@2
+      displayName: 'docker push (tt-web)'
+      inputs:
+        script: |
+          docker push $(containerRegistryFqdn)/cart.api:$(Build.BuildId)
 
 #   - job: artifacts
 #     dependsOn:
