@@ -46,7 +46,7 @@ stages:
       inputs:
         scriptSource: 'inline'
         script: |
-          print('Hello world 1')
+          pip3 install pytest
 
 - stage: build
   dependsOn: test
