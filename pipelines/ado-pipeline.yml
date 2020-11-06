@@ -23,8 +23,28 @@ variables:
 
 stages:
 
+- stage: test
+  dependsOn: []
+
+  jobs:
+  
+  - job: tests
+    pool: Hosted Ubuntu 1604
+    continueOnError: false
+    timeoutInMinutes: 20
+    
+    steps:
+
+    - task: PythonScript@0
+      displayName: Run Python Tests
+      inputs:
+        scriptSource: 'inline'
+        script: |
+          pip install pytest
+          pytest azure-vote/azure-vote/tests/
+
 - stage: build
-  # dependsOn: test
+  dependsOn: test
   condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
 
   jobs:
