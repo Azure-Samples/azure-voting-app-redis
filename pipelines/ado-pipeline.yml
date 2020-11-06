@@ -41,12 +41,8 @@ stages:
         addToPath: true
         architecture: 'x64'
      
-    - task: PythonScript@0
-      displayName: Run Python Tests
-      inputs:
-        scriptSource: 'inline'
-        script: |
-          python -m pip install -upgrade pip
+    - script: |
+        python -m pip install -upgrade pip
 
 - stage: build
   dependsOn: test
