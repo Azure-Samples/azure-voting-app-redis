@@ -34,6 +34,12 @@ stages:
     timeoutInMinutes: 20
     
     steps:
+    
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '3.x'
+        addToPath: true
+        architecture: 'x64'
 
     - task: PythonScript@0
       displayName: Run Python Tests
