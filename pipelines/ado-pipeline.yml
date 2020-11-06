@@ -48,7 +48,7 @@ stages:
       inputs:
         script: |
           # cd ops40/demos/tailwind-cart-api/Tailwind.Traders.Cart.Api
-          docker build -t $(containerRegistryFqdn)/cart.api:$(Build.BuildId) -f /azure-vote/Dockerfile
+          docker build -t $(containerRegistryFqdn)/cart.api:$(Build.BuildId) -f azure-vote/Dockerfile
 
     # - task: CmdLine@2
     #   displayName: 'docker push (tt-web)'
