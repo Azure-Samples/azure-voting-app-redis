@@ -49,9 +49,11 @@ stages:
     - task: PublishTestResults@2
       displayName: 'Publish Test Results'
       inputs:
+        testResultsFormat: 'JUnit'
         testResultsFiles: '**/test-results.xml'
+        failTaskOnFailedTests: true
         testRunTitle: 'Python $(python.version)'
-
+        
 - stage: build
   dependsOn: test
   condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
