@@ -68,6 +68,12 @@ spec:
         env:
         - name: REDIS
           value: "azure-vote-back"
+        - name: TITLE
+          value: "Azure Voting App Helm"
+        - name: VOTE1VALUE
+          value: "Cats Helm"
+        - name: VOTE2VALUE
+          value: "Dogs Helm"
 ---
 apiVersion: v1
 kind: Service
