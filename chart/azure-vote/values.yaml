@@ -1,2 +1,2 @@
 serviceType: LoadBalancer
-image: mcr.microsoft.com/azuredocs/azure-vote-front
+image: mcr.microsoft.com/azuredocs/azure-vote-front:v1
