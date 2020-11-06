@@ -42,7 +42,7 @@ stages:
         architecture: 'x64'
      
     - script: |
-        python -m pip install -upgrade pip
+        pip3 install pytest
 
 - stage: build
   dependsOn: test
