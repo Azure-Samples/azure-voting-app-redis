@@ -61,14 +61,13 @@ stages:
       displayName: 'docker build (vote-front)'
       inputs:
         script: |
-          # cd ops40/demos/tailwind-cart-api/Tailwind.Traders.Cart.Api
           docker build -t $(containerRegistryFqdn)/azure-vote:$(Build.BuildId) -f azure-vote/Dockerfile .
 
     - task: CmdLine@2
       displayName: 'docker push (tt-web)'
       inputs:
         script: |
-          docker push $(containerRegistryFqdn)/cart.api:$(Build.BuildId)
+          docker push $(containerRegistryFqdn)/azure-vote:$(Build.BuildId)
 
 - stage: release_pre_production
   dependsOn: build
