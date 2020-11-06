@@ -24,7 +24,7 @@ variables:
 stages:
 
 - stage: build
-  dependsOn: test
+  # dependsOn: test
   condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
 
   jobs:
@@ -36,115 +36,115 @@ stages:
 
     steps:
 
-    - task: AzureCLI@1
-      displayName: 'AZ ACR Login'
-      inputs:
-        azureSubscription: $(azureSubscription)
-        scriptLocation: inlineScript
-        inlineScript: 'az acr login --name $(containerRegistryName)'
+    # - task: AzureCLI@1
+    #   displayName: 'AZ ACR Login'
+    #   inputs:
+    #     azureSubscription: $(azureSubscription)
+    #     scriptLocation: inlineScript
+    #     inlineScript: 'az acr login --name $(containerRegistryName)'
 
     - task: CmdLine@2
-      displayName: 'docker build (tt-cart)'
+      displayName: 'docker build (vote-front)'
       inputs:
         script: |
-          cd ops40/demos/tailwind-cart-api/Tailwind.Traders.Cart.Api
-          docker build -t $(containerRegistryFqdn)/cart.api:$(Build.BuildId) .
+          # cd ops40/demos/tailwind-cart-api/Tailwind.Traders.Cart.Api
+          docker build -t $(containerRegistryFqdn)/cart.api:$(Build.BuildId) -f /azure-vote/Dockerfile
 
-    - task: CmdLine@2
-      displayName: 'docker push (tt-web)'
-      inputs:
-        script: |
-          docker push $(containerRegistryFqdn)/cart.api:$(Build.BuildId)
+    # - task: CmdLine@2
+    #   displayName: 'docker push (tt-web)'
+    #   inputs:
+    #     script: |
+    #       docker push $(containerRegistryFqdn)/cart.api:$(Build.BuildId)
 
-  - job: artifacts
-    dependsOn:
-    - helm
-    - docker
+#   - job: artifacts
+#     dependsOn:
+#     - helm
+#     - docker
 
-    pool:
-      name: Hosted Ubuntu 1604
+#     pool:
+#       name: Hosted Ubuntu 1604
 
-    steps:
+#     steps:
 
-    - task: PublishBuildArtifacts@1
-      displayName: 'Publish Artifacts'
-      inputs:
-        PathtoPublish: '/home/vsts/work/1/s'
-        artifactName: 'drop'
+#     - task: PublishBuildArtifacts@1
+#       displayName: 'Publish Artifacts'
+#       inputs:
+#         PathtoPublish: '/home/vsts/work/1/s'
+#         artifactName: 'drop'
 
-- stage: release_pre_production
-  dependsOn: build
+# - stage: release_pre_production
+#   dependsOn: build
 
-  jobs:
-  - deployment: release_pre_production
-    pool: Hosted Ubuntu 1604
-    continueOnError: false
-    timeoutInMinutes: 20
-    environment: pre-production
+#   jobs:
+#   - deployment: release_pre_production
+#     pool: Hosted Ubuntu 1604
+#     continueOnError: false
+#     timeoutInMinutes: 20
+#     environment: pre-production
 
     # strategy can be runonce and canary (blue green on roadmap)
     # strategy influences life-cycle hooks
-    strategy:
-      runOnce:
+    # strategy:
+    #   runOnce:
 
-        deploy:
-          steps:
+    #     deploy:
+    #       steps:
 
-          - download: current
-            artifact: drop
-            patterns: '**/*'
+    #       - download: current
+    #         artifact: drop
+    #         patterns: '**/*'
           
-          - task: HelmInstaller@1
-            inputs:
-              helmVersionToInstall: '2.14.3'
+    #       - task: HelmInstaller@1
+    #         inputs:
+    #           helmVersionToInstall: '2.14.3'
 
-          - task: AzureCLI@1
-            displayName: Deploy Pre-Production
-            inputs:
-              azureSubscription: $(azureSubscription)
-              scriptLocation: 'inlineScript'
-              inlineScript: |
-                az extension add -n application-insights
-                az acr login --name $(containerRegistryName)
-                az acr helm repo add --name $(containerRegistryName)
-                az aks get-credentials --name $(aks-cluster-pre-prod) --resource-group $(aks-cluster-rg-pre-prod) --admin
-                pwsh /home/vsts/work/1/drop/deployment/helm-values/generate-config.ps1 -resourceGroup $(aks-cluster-rg-pre-prod) -sqlPwd Password2020! -gvaluesTemplate /home/vsts/work/1/drop/deployment/helm-values/gvalues.template -outputFile values.yaml
-                kubectl delete configmap -l release=my-tt-cart
-                helm upgrade my-tt-cart $(containerRegistryName)/cart-api --install -f values.yaml --set ingress.hosts={$(ingress-pre-prod)} --set image.repository=$(containerRegistryFqdn)/cart.api --set image.tag=$(Build.BuildId)
+#           - task: AzureCLI@1
+#             displayName: Deploy Pre-Production
+#             inputs:
+#               azureSubscription: $(azureSubscription)
+#               scriptLocation: 'inlineScript'
+#               inlineScript: |
+#                 az extension add -n application-insights
+#                 az acr login --name $(containerRegistryName)
+#                 az acr helm repo add --name $(containerRegistryName)
+#                 az aks get-credentials --name $(aks-cluster-pre-prod) --resource-group $(aks-cluster-rg-pre-prod) --admin
+#                 pwsh /home/vsts/work/1/drop/deployment/helm-values/generate-config.ps1 -resourceGroup $(aks-cluster-rg-pre-prod) -sqlPwd Password2020! -gvaluesTemplate /home/vsts/work/1/drop/deployment/helm-values/gvalues.template -outputFile values.yaml
+#                 kubectl delete configmap -l release=my-tt-cart
+#                 helm upgrade my-tt-cart $(containerRegistryName)/cart-api --install -f values.yaml --set ingress.hosts={$(ingress-pre-prod)} --set image.repository=$(containerRegistryFqdn)/cart.api --set image.tag=$(Build.BuildId)
 
-- stage: release_production
-  dependsOn: release_pre_production
+# - stage: release_production
+#   dependsOn: release_pre_production
 
-  jobs:
-  - deployment: release_production
-    pool: Hosted Ubuntu 1604
-    continueOnError: false
-    timeoutInMinutes: 20
-    environment: production
+#   jobs:
+#   - deployment: release_production
+#     pool: Hosted Ubuntu 1604
+#     continueOnError: false
+#     timeoutInMinutes: 20
+#     environment: production
 
-    strategy:
-      runOnce:
-        deploy:
-          steps:
+    # strategy:
+    #   runOnce:
+    #     deploy:
+    #       steps:
 
-          - download: current
-            artifact: drop
-            patterns: '**/*'
+    #       - download: current
+    #         artifact: drop
+    #         patterns: '**/*'
 
-          - task: HelmInstaller@1
-            inputs:
-              helmVersionToInstall: '2.14.3'
+    #       - task: HelmInstaller@1
+    #         inputs:
+    #           helmVersionToInstall: '2.14.3'
 
-          - task: AzureCLI@1
-            displayName: Deploy Production
-            inputs:
-              azureSubscription: $(azureSubscription)
-              scriptLocation: 'inlineScript'
-              inlineScript: |
-                az extension add -n application-insights
-                az acr login --name $(containerRegistryName)
-                az acr helm repo add --name $(containerRegistryName)
-                az aks get-credentials --name $(aks-cluster) --resource-group $(aks-cluster-rg) --admin
-                pwsh /home/vsts/work/1/drop/deployment/helm-values/generate-config.ps1 -resourceGroup $(aks-cluster-rg-pre-prod) -sqlPwd Password2020! -gvaluesTemplate /home/vsts/work/1/drop/deployment/helm-values/gvalues.template -outputFile values.yaml
-                kubectl delete configmap -l release=my-tt-cart
-                helm upgrade my-tt-cart $(containerRegistryName)/cart-api --install -f values.yaml --set ingress.hosts={$(ingress-pre-prod)} --set image.repository=$(containerRegistryFqdn)/cart.api --set image.tag=$(Build.BuildId)
+          # - task: AzureCLI@1
+          #   displayName: Deploy Production
+          #   inputs:
+          #     azureSubscription: $(azureSubscription)
+          #     scriptLocation: 'inlineScript'
+          #     inlineScript: |
+          #       az extension add -n application-insights
+          #       az acr login --name $(containerRegistryName)
+          #       az acr helm repo add --name $(containerRegistryName)
+          #       az aks get-credentials --name $(aks-cluster) --resource-group $(aks-cluster-rg) --admin
+          #       pwsh /home/vsts/work/1/drop/deployment/helm-values/generate-config.ps1 -resourceGroup $(aks-cluster-rg-pre-prod) -sqlPwd Password2020! -gvaluesTemplate /home/vsts/work/1/drop/deployment/helm-values/gvalues.template -outputFile values.yaml
+          #       kubectl delete configmap -l release=my-tt-cart
+          #       helm upgrade my-tt-cart $(containerRegistryName)/cart-api --install -f values.yaml --set ingress.hosts={$(ingress-pre-prod)} --set image.repository=$(containerRegistryFqdn)/cart.api --set image.tag=$(Build.BuildId)
