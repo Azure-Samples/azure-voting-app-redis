@@ -46,8 +46,7 @@ stages:
       inputs:
         scriptSource: 'inline'
         script: |
-          pip3 install pytest
-          pytest azure-vote/azure-vote/tests/
+          print('Hello world 1')
 
 - stage: build
   dependsOn: test
