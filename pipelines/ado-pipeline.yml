@@ -46,7 +46,7 @@ stages:
       inputs:
         scriptSource: 'inline'
         script: |
-          pip install pytest
+          pip3 install pytest
           pytest azure-vote/azure-vote/tests/
 
 - stage: build
