@@ -102,7 +102,7 @@ stages:
                 az acr login --name $(containerRegistryName)
                 az acr helm repo add --name $(containerRegistryName)
                 az aks get-credentials --name $(aks-cluster-pre-prod) --resource-group $(aks-cluster-rg-pre-prod) --admin
-                helm upgrade azure-vote-test $(containerRegistryName)/azure-vote --install -f values.yaml --set image=$(containerRegistryFqdn)/vote-front --set image.tag=$(Build.BuildId)
+                helm upgrade azure-vote-test $(containerRegistryName)/azure-vote --install --set image=$(containerRegistryFqdn)/vote-front --set image.tag=$(Build.BuildId)
 
 # - stage: release_production
 #   dependsOn: release_pre_production
