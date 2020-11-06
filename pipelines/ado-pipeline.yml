@@ -40,12 +40,12 @@ stages:
         versionSpec: '3.x'
         addToPath: true
         architecture: 'x64'
-
+     
     - task: PythonScript@0
       displayName: Run Python Tests
       inputs:
         scriptSource: 'inline'
-        script: 'pip install pytest && pytest azure-vote/azure-vote/tests/ --junitxml=junit/test-results.xml'
+        script: 'pip install'
 
 - stage: build
   dependsOn: test
