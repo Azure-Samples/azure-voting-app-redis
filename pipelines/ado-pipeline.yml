@@ -43,13 +43,6 @@ stages:
         scriptLocation: inlineScript
         inlineScript: 'az acr login --name $(containerRegistryName)'
 
-    # - task: HelmDeploy@0
-    #   displayName: 'helm init --client-only'
-    #   inputs:
-    #     connectionType: None
-    #     command: init
-    #     arguments: '--client-only'
-
     - task: HelmDeploy@0
       displayName: 'helm package (azure-vote)'
       inputs:
@@ -93,13 +86,13 @@ stages:
         deploy:
           steps:
 
-          - download: current
-            artifact: drop
-            patterns: '**/*'
+          # - download: current
+          #   artifact: drop
+          #   patterns: '**/*'
           
-          - task: HelmInstaller@1
-            inputs:
-              helmVersionToInstall: '2.14.3'
+          # - task: HelmInstaller@1
+          #   inputs:
+          #     helmVersionToInstall: '2.14.3'
 
           - task: AzureCLI@1
             displayName: Deploy Pre-Production
