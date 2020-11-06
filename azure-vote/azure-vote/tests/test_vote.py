@@ -7,7 +7,7 @@ def test_vote1():
 
 def test_vote2():
    num = 25
-   assert math.sqrt(num) == 5
+   assert math.sqrt(num) == 8
 
 def test_lint():
    assert 2*20 == 40
