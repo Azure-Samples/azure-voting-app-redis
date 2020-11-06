@@ -45,7 +45,7 @@ stages:
       displayName: Run Python Tests
       inputs:
         scriptSource: 'inline'
-        script: 'pip install'
+        script: pip install pytest
 
 - stage: build
   dependsOn: test
