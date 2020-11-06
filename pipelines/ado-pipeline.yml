@@ -43,6 +43,27 @@ stages:
         scriptLocation: inlineScript
         inlineScript: 'az acr login --name $(containerRegistryName)'
 
+    # - task: HelmDeploy@0
+    #   displayName: 'helm init --client-only'
+    #   inputs:
+    #     connectionType: None
+    #     command: init
+    #     arguments: '--client-only'
+
+    - task: HelmDeploy@0
+      displayName: 'helm package (azure-vote)'
+      inputs:
+        command: package
+        chartPath: 'chart/azure-vote/'
+        arguments: '--version $(Build.BuildId)'
+
+    - task: AzureCLI@1
+      displayName: 'AZ ACR helm push (azure-vote)'
+      inputs:
+        azureSubscription: $(azureSubscription)
+        scriptLocation: inlineScript
+        inlineScript: 'az acr helm push -n $(containerRegistryName) /home/vsts/work/1/a/azure-vote-$(Build.BuildId).tgz'
+
     - task: CmdLine@2
       displayName: 'docker build (vote-front)'
       inputs:
