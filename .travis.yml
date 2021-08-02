@@ -1,4 +1,4 @@
-if: tags = true
+if: tag IS present
 
 # Export variables
 env:
