@@ -11,7 +11,7 @@ echo ---------------------------------------
 echo Building image
 echo ---------------------------------------
 
-docker build -t $IMAGE_NAME:$TRAVIS_TAG ./azure-vote || exit 1
+docker build -t $CI_REGISTRY_USER/$IMAGE_NAME:$TRAVIS_TAG ./azure-vote || exit 1
 
 echo ---------------------------------------
 echo Login to Dockerhub
