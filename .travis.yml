@@ -1,5 +1,6 @@
 if: tag IS present
 
+sudo: required
 # Export variables
 env:
   - tf_version=1.0.3 tf_init_cli_options="-input=false" tf_validation_cli_options="" tf_plan_cli_options="-lock=false -input=false" tf_apply_cli_options="-auto-approve -input=false"
@@ -12,6 +13,8 @@ before_install:
   - unzip terraform_"$tf_version"_linux_amd64.zip
   - sudo mv terraform /usr/local/bin/
   - rm terraform_"$tf_version"_linux_amd64.zip
+  - curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/v1.20.7/bin/linux/amd64/kubectl && \
+      chmod +x kubectl && sudo mv kubectl /usr/local/bin/
 
 jobs:
   include:
