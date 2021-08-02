@@ -23,4 +23,4 @@ echo ---------------------------------------
 echo Pushing image to Dockerhub
 echo ---------------------------------------
 
-docker push $CI_REGISTRY_USER/$IMAGE_NAME || exit 1
+docker push $CI_REGISTRY_USER/$IMAGE_NAME:$TRAVIS_TAG || exit 1
