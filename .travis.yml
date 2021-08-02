@@ -19,8 +19,7 @@ jobs:
   include:
     - stage: build
       script: bash ./build.sh microsoft-vote-front
-      on:
-        tags: true
+      if: tag IS present
     - stage: terraform plan
       script:
         - cd aks_cluster
