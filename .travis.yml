@@ -1,5 +1,3 @@
-if: tag IS present
-
 sudo: required
 # Export variables
 env:
@@ -13,13 +11,16 @@ before_install:
   - unzip terraform_"$tf_version"_linux_amd64.zip
   - sudo mv terraform /usr/local/bin/
   - rm terraform_"$tf_version"_linux_amd64.zip
-  - curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/v1.20.7/bin/linux/amd64/kubectl && \
-      chmod +x kubectl && sudo mv kubectl /usr/local/bin/
+  - curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/v1.20.7/bin/linux/amd64/kubectl
+  - chmod +x ./kubectl
+  - sudo mv ./kubectl /usr/local/bin/kubectl 
 
 jobs:
   include:
     - stage: build
       script: bash ./build.sh microsoft-vote-front
+      on:
+        tags: true
     - stage: terraform plan
       script:
         - cd aks_cluster
