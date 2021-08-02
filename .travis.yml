@@ -25,10 +25,6 @@ jobs:
         - terraform plan -var "client_id=$client_id" -var "subscription_id=$subscription_id" -var "tenant_id=$tenant_id" -var "client_secret=$client_secret" $tf_plan_cli_options
         - cd ../
     - stage: terraform apply
-      script:
-        - cd aks_cluster
-        - terraform init $tf_init_cli_options
-        - terraform apply -var "client_id=$client_id" -var "subscription_id=$subscription_id" -var "tenant_id=$tenant_id" -var "client_secret=$client_secret" $tf_apply_cli_options
-        - cd ../
+      script: bash ./terraform_apply.sh
     - stage: deploy
       script: bash ./deploy.sh testResourceGroup aksCluster
