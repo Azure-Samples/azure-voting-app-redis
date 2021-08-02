@@ -4,6 +4,12 @@ RESOURCE_GROUP=$1
 RESOURCE_NAME=$2
 
 echo ---------------------------------------
+echo Login to azure
+echo ---------------------------------------
+
+az login --service-principal -u $AZURE_SERVICE_PRINCIPAL -p $client_secret --tenant $tenant_id
+
+echo ---------------------------------------
 echo Connecting to aks cluster
 echo ---------------------------------------
 
