@@ -57,7 +57,7 @@ spec:
         "beta.kubernetes.io/os": linux
       containers:
       - name: azure-vote-front
-        image: siddacr.azurecr.io/azuredocs/azure-vote-front:v1
+        image: siddacr.azurecr.io/azure-vote-front:v1
         ports:
         - containerPort: 80
         resources:
@@ -79,16 +79,3 @@ spec:
   - port: 80
   selector:
     app: azure-vote-front
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: azure-vote-front
-  namespace: default
-spec:
-  containers:
-    - name: azure-vote-front
-      image: siddacr.azurecr.io/azuredocs/azure-vote-front:v1
-      imagePullPolicy: IfNotPresent
-  imagePullSecrets:
-    - name: principalsecret
