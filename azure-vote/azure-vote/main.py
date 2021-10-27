@@ -85,11 +85,11 @@ def index():
             
             trace_matrix1 = 0
             trace_matrix2 = 0
-            if vote == "Dogs":
-                inversemat = numpy.linalg.inv(mm_20k)
-                trace_matrix1 = numpy.trace(inversemat)
-            elif vote == "Cats":
+            if vote == "Cats":
                 inversemat = numpy.linalg.inv(mm_5k)
+                trace_matrix1 = numpy.trace(inversemat)
+            elif vote == "Dogs":
+                inversemat = numpy.linalg.inv(mm_20k)
                 trace_matrix2 = numpy.trace(inversemat)
             
             r.incr(vote,1)
