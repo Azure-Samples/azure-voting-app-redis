@@ -4,6 +4,8 @@ import random
 import redis
 import socket
 import sys
+import numpy
+
 
 app = Flask(__name__)
 
@@ -48,6 +50,9 @@ if app.config['SHOWHOST'] == "true":
 if not r.get(button1): r.set(button1,0)
 if not r.get(button2): r.set(button2,0)
 
+mm_20k = numpy.random.random((20000,20000))
+mm_5k = numpy.random.random((5000,5000))
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
 
@@ -75,6 +80,18 @@ def index():
 
             # Insert vote result into DB
             vote = request.form['vote']
+            
+            print(vote)
+            
+            trace_matrix1 = 0
+            trace_matrix2 = 0
+            if vote == "Dogs":
+                inversemat = numpy.linalg.inv(mm_20k)
+                trace_matrix1 = numpy.trace(inversemat)
+            elif vote == "Cats":
+                inversemat = numpy.linalg.inv(mm_5k)
+                trace_matrix2 = numpy.trace(inversemat)
+            
             r.incr(vote,1)
             
             # Get current values
@@ -82,7 +99,7 @@ def index():
             vote2 = r.get(button2).decode('utf-8')  
                 
             # Return results
-            return render_template("index.html", value1=int(vote1), value2=int(vote2), button1=button1, button2=button2, title=title)
+            return render_template("index.html", value1=float(trace_matrix1), value2=float(trace_matrix2), button1=button1, button2=button2, title=title)
 
 if __name__ == "__main__":
     app.run()
