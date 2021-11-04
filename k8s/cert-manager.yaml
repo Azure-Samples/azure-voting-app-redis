@@ -1,11 +1,11 @@
 apiVersion: cert-manager.io/v1
-kind: Issuer
+kind: ClusterIssuer
 metadata:
   name: letsencrypt
   namespace: ingress
 spec:
   acme:
-    server: acme-staging-v02.api.letsencrypt.org/directory
+    server: https://acme-v02.api.letsencrypt.org/directory
     email: damian.urbaniak@natzka.com
     privateKeySecretRef:
       name: letsencrypt
@@ -28,3 +28,36 @@ spec:
     kind: ClusterIssuer
   dnsNames:
   - "predscaling01.natzkalabs.com"
+  # secretTemplate:
+  #   annotations:
+  #     kubed.appscode.com/sync: "cert-manager-tls=true"
+
+---
+
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: predscaling01-graf-cert
+  namespace: monitoring
+spec:
+  secretName: predscaling01-graf-tls
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer
+  dnsNames:
+  - "predscaling01-graf.natzkalabs.com"
+
+---
+
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: predscaling01-prom-cert
+  namespace: monitoring
+spec:
+  secretName: predscaling01-prom-tls
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer
+  dnsNames:
+  - "predscaling01-prom.natzkalabs.com"

@@ -1,14 +1,18 @@
 ## NS 
 kubectl create namespace monitoring ingress
 
-## Prometheus
-helm install prometheus --namespace monitoring --set alertmanager.enabled=false --set pushgateway.enabled=false --set server.persistentVolume.size=1000Gi --set server.persistentVolume.storageClass=azurefile-premium --set 'server.persistentVolume.accessModes={ReadWriteMany}' --set rbac.create=true stable/prometheus
+## Prometheus-stack
 
-kubectl -n monitoring expose deployment prometheus-server --name "prometheus-public"
-
-## Grafana
-helm install grafana grafana/grafana --namespace monitoring --set persistence.storageClassName=default --set persistence.enabled=true --set adminPassword=<pass> --set service.type=LoadBalancer
+helm upgrade --install -n monitoring prometheus prometheus-community/kube-prometheus-stack -f kube-prometheus-stack.yaml
 
 ## INGRESS
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-helm install nginx-ingress ingress-nginx/ingress-nginx --namespace ingress
+helm upgrade --install nginx-ingress ingress-nginx/ingress-nginx --namespace ingress
+
+## Cert-manager
+helm upgrade --install cert-manager jetstack/cert-manager --namespace ingress --set installCRDs=true --set prometheus.enabled=true
+
+<!-- 
+## kubed 
+helm repo add appscode https://charts.appscode.com/stable/  
+helm upgrade --install kubed appscode/kubed --namespace kube-system -->

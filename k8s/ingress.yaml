@@ -7,17 +7,75 @@ metadata:
   namespace: default
 spec:
   rules:
-    - host: predscaling01.natzkalabs.com
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: azure-vote-front
-                port:
-                  number: 80
+  - host: predscaling01.natzkalabs.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: azure-vote-front
+            port:
+              number: 80
   tls:
     - hosts:
       - predscaling01.natzkalabs.com
-      secretName: predscaling01
+      secretName: predscaling01-tls
+
+# --- 
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   annotations:
+#     kubernetes.io/ingress.class: nginx
+#     # nginx.ingress.kubernetes.io/use-regex: "true"
+#     nginx.ingress.kubernetes.io/rewrite-target: /$2
+#     # nginx.ingress.kubernetes.io/configuration-snippet: |
+#     #   rewrite ^(/grafana)$ $1/ redirect;
+#   name: grafana
+#   namespace: monitoring
+# spec:
+#   rules:
+#     - host: predscaling01.natzkalabs.com
+#       http:
+#         paths:
+#           - path: /grafana(/|$)(.*)
+#             pathType: Prefix
+#             backend:
+#               service:
+#                 name: grafana
+#                 port:
+#                   number: 80
+#   tls:
+#     - hosts:
+#       - predscaling01.natzkalabs.com
+#       secretName: dpredscaling01-tls
+
+
+# --- 
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   annotations:
+#     kubernetes.io/ingress.class: nginx
+#     # nginx.ingress.kubernetes.io/ssl-redirect: "true"
+#     # nginx.ingress.kubernetes.io/use-regex: "true"
+#     nginx.ingress.kubernetes.io/rewrite-target: /prometheus/$1
+#   name: prometheus
+#   namespace: monitoring
+# spec:
+#   rules:
+#     - host: predscaling01.natzkalabs.com
+#       http:
+#         paths:
+#           - path: /prometheus
+#             pathType: Prefix
+#             backend:
+#               service:
+#                 name: prometheus-server
+#                 port:
+#                   number: 80
+#   tls:
+#     - hosts:
+#       - predscaling01.natzkalabs.com
+#       secretName: predscaling01-tls
