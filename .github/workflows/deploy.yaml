@@ -23,7 +23,7 @@ jobs:
       id: set-kubectl-context
       with:
          kubeconfig: ${{ secrets.KUBECONFIG }}
-         
+
     - name: Docker build
       run: |
         cd azure-vote
@@ -47,3 +47,4 @@ jobs:
       if: ${{ github.ref == 'refs/heads/master' }}
       run: |
         kubectl apply -f azure-vote-all-in-one-redis.yaml
+        kubectl set image deployment/azure-vote-front azure-vote-front=natzkadevcontainerregistry.azurecr.io/azure-vote-front:${{ github.run_number }}
