@@ -1,0 +1,50 @@
+name: azure-vote-front
+on:
+  push:
+    branches:
+      - master
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  registryName: "natzkadevcontainerregistry"
+  natzkaacr-service-principal-id: "d7820fe3-a20e-4d77-a3a1-76acb2517254"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+
+    - uses: azure/k8s-set-context@v1
+      id: set-kubectl-context
+      with:
+         kubeconfig: ${{ secrets.KUBECONFIG }}
+
+    - name: Install Helm
+      uses: azure/setup-helm@v1
+
+    - name: Docker build
+      run: |
+        cd azure-vote
+        docker build -t ${{ env.registryName }}.azurecr.io/azure-vote-front:${{ github.run_number }} -t ${{ env.registryName }}.azurecr.io/azure-vote-front:latest .
+
+    - name: Login to ACR
+      if: ${{ github.ref == 'refs/heads/master' }}
+      uses: docker/login-action@v1
+      with:
+        registry: ${{ env.registryName }}.azurecr.io
+        username: ${{ env.natzkaacr-service-principal-id }}
+        password: ${{ secrets.NATZKAACR_SERVICE_PRINCIPAL_SECRET }}
+
+    - name: Docker push
+      if: ${{ github.ref == 'refs/heads/master' }}
+      run: |
+        docker push ${{ env.registryName }}.azurecr.io/azure-vote-front:${{ github.run_number }}
+        docker push ${{ env.registryName }}.azurecr.io/azure-vote-front:latest
+
+    - name: Deploy apps
+      if: ${{ github.ref == 'refs/heads/master' }}
+      run: |
+        kubectl apply -f azure-vote-all-in-one-redis.yaml

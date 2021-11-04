@@ -1,0 +1,30 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: letsencrypt
+  namespace: ingress
+spec:
+  acme:
+    server: acme-staging-v02.api.letsencrypt.org/directory
+    email: damian.urbaniak@natzka.com
+    privateKeySecretRef:
+      name: letsencrypt
+    solvers:
+    - http01:
+        ingress:
+          class: nginx
+
+---
+
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: predscaling01-cert
+  namespace: default
+spec:
+  secretName: predscaling01-tls
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer
+  dnsNames:
+  - "predscaling01.natzkalabs.com"

@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+  name: azure-vote-front
+  namespace: default
+spec:
+  rules:
+    - host: predscaling01.natzkalabs.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: azure-vote-front
+                port:
+                  number: 80
+  tls:
+    - hosts:
+      - predscaling01.natzkalabs.com
+      secretName: predscaling01
