@@ -1,6 +1,14 @@
 version: '3'
 services:
-  computations-backend:
+  computing-backend:
     build: ./backend
     ports:
-        - "80:80"
+      - "5678:80"
+
+  computing-frontend:
+    build: ./frontend
+    ports:
+      - "8080:80"
+    environment:
+      - "COMPUTING_BK=http://computing-backend"
+

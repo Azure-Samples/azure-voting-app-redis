@@ -3,10 +3,6 @@ import numpy as np
 
 app = FastAPI()
 
-
-#mm_20k = numpy.random.random((20000,20000))
-mm_big = np.random.random((5000,5000))
-
 def matrix_inverse_trace(msize: int):
     m = np.random.random((msize, msize))
     inversemat = np.linalg.inv(m)
