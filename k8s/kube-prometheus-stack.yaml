@@ -1,0 +1,43 @@
+grafana:
+  adminPassword: seGf2MQ668TKzGPP
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: nginx
+    hosts:
+    - predscaling01-graf.natzkalabs.com
+    tls:
+    - secretName: predscaling01-graf-tls
+      hosts:
+      - predscaling01-graf.natzkalabs.com
+
+kubeControllerManager:
+  enabled: false
+
+alertManager:
+  enabled: false
+
+kubeetcd:
+  enabled: false
+
+prometheus:
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: nginx
+    hosts:
+    - predscaling01-prom.natzkalabs.com
+    tls:
+    - secretName: predscaling01-prom-tls
+      hosts:
+      - predscaling01-prom.natzkalabs.com
+    storageSpec:
+      volumeClaimTemplate:
+       spec:
+         storageClassName: azurefile-premium
+         accessModes: ["ReadWriteMany"]
+         resources:
+           requests:
+             storage: 1000Gi
+
+
