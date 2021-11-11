@@ -3,7 +3,7 @@ kubectl create namespace monitoring ingress
 
 ## Prometheus-stack
 
-helm upgrade --install -n monitoring prometheus prometheus-community/kube-prometheus-stack -f kube-prometheus-stack.yaml
+helm upgrade --install -n monitoring prometheus-stack prometheus-community/kube-prometheus-stack -f kube-prometheus-stack.yaml
 
 ## INGRESS
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx

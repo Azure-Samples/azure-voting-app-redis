@@ -11,18 +11,22 @@ spec:
     metadata:
       labels:
         app: azure-vote-back
+      annotations:
+        config.linkerd.io/proxy-cpu-request: "0.1"
     spec:
-      nodeSelector:
-        "beta.kubernetes.io/os": linux
       containers:
       - name: azure-vote-back
-        image: mcr.microsoft.com/oss/bitnami/redis:6.0.8
-        env:
-        - name: ALLOW_EMPTY_PASSWORD
-          value: "yes"
+        image: natzkadevcontainerregistry.azurecr.io/azure-vote-back:latest
+        #mcr.microsoft.com/oss/bitnami/redis:6.0.8
         ports:
-        - containerPort: 6379
-          name: redis
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: 250m
+            # memory: 200Mi
+          limits:
+            cpu: 1
+            # memory: 2Gi
 ---
 apiVersion: v1
 kind: Service
@@ -30,7 +34,7 @@ metadata:
   name: azure-vote-back
 spec:
   ports:
-  - port: 6379
+  - port: 80
   selector:
     app: azure-vote-back
 ---
@@ -52,9 +56,9 @@ spec:
     metadata:
       labels:
         app: azure-vote-front
+      annotations:
+        config.linkerd.io/proxy-cpu-request: "0.1"
     spec:
-      nodeSelector:
-        "beta.kubernetes.io/os": linux
       containers:
       - name: azure-vote-front
         image: natzkadevcontainerregistry.azurecr.io/azure-vote-front:latest
@@ -66,11 +70,11 @@ spec:
             cpu: 250m
             # memory: 200Mi
           limits:
-            cpu: 2
+            cpu: 500m
             # memory: 2Gi
         env:
-        - name: REDIS
-          value: "azure-vote-back"
+        - name: COMPUTING_BK
+          value: "http://azure-vote-back"
 ---
 apiVersion: v1
 kind: Service
@@ -82,3 +86,42 @@ spec:
   - port: 80
   selector:
     app: azure-vote-front
+
+
+---
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: azure-vote-back
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: azure-vote-back
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50
+  # - type: Pods
+  #   pods:
+  #     metric:
+  #       name: packets-per-second
+  #     target:
+  #       type: AverageValue
+  #       averageValue: 1k
+  # - type: Object
+  #   object:
+  #     metric:
+  #       name: requests-per-second
+  #     describedObject:
+  #       apiVersion: networking.k8s.io/v1beta1
+  #       kind: Ingress
+  #       name: azure-vote-front
+  #     target:
+  #       type: Value
+  #       value: 1k
