@@ -24,10 +24,15 @@ jobs:
       with:
          kubeconfig: ${{ secrets.KUBECONFIG }}
 
-    - name: Docker build
+    - name: "[front] Docker build"
       run: |
-        cd azure-vote
+        cd frontend
         docker build -t ${{ env.registryName }}.azurecr.io/azure-vote-front:${{ github.run_number }} -t ${{ env.registryName }}.azurecr.io/azure-vote-front:latest .
+
+    - name: "[back] Docker build"
+      run: |
+        cd backend
+        docker build -t ${{ env.registryName }}.azurecr.io/azure-vote-back:${{ github.run_number }} -t ${{ env.registryName }}.azurecr.io/azure-vote-back:latest .
 
     - name: Login to ACR
       if: ${{ github.ref == 'refs/heads/master' }}
@@ -42,9 +47,12 @@ jobs:
       run: |
         docker push ${{ env.registryName }}.azurecr.io/azure-vote-front:${{ github.run_number }}
         docker push ${{ env.registryName }}.azurecr.io/azure-vote-front:latest
+        docker push ${{ env.registryName }}.azurecr.io/azure-vote-back:${{ github.run_number }}
+        docker push ${{ env.registryName }}.azurecr.io/azure-vote-back:latest
 
     - name: Deploy apps
       if: ${{ github.ref == 'refs/heads/master' }}
       run: |
         kubectl apply -f azure-vote-all-in-one-redis.yaml
         kubectl set image deployment/azure-vote-front azure-vote-front=natzkadevcontainerregistry.azurecr.io/azure-vote-front:${{ github.run_number }}
+        kubectl set image deployment/azure-vote-back azure-vote-back=natzkadevcontainerregistry.azurecr.io/azure-vote-back:${{ github.run_number }}
