@@ -22,8 +22,6 @@ kubeetcd:
   enabled: false
 
 prometheus:
-  image:
-    tag: v2.31.1
   ingress:
     enabled: true
     annotations:
@@ -35,16 +33,19 @@ prometheus:
     - secretName: predscaling01-prom-tls
       hosts:
       - predscaling01-prom.natzkalabs.com
+  prometheusSpec:
+    image:
+      tag: v2.31.1
     storageSpec:
       volumeClaimTemplate:
        spec:
-         storageClassName: azurefile-premium
+         storageClassName: azurefile
          accessModes: ["ReadWriteMany"]
          resources:
            requests:
-             storage: 1000Gi
-  prometheusSpec:
-    scrapeInterval: "15s"
+             storage: 300Gi
+    scrapeInterval: "30s"
+    scrapeTimeout: "15s"
     additionalScrapeConfigs:
     - job_name: 'linkerd-controller'
       kubernetes_sd_configs:

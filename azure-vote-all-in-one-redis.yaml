@@ -22,10 +22,10 @@ spec:
         - containerPort: 80
         resources:
           requests:
-            cpu: 250m
+            cpu: 100m
             # memory: 200Mi
           limits:
-            cpu: 1
+            cpu: 500m
             # memory: 2Gi
 ---
 apiVersion: v1
@@ -67,7 +67,7 @@ spec:
         - containerPort: 80
         resources:
           requests:
-            cpu: 250m
+            cpu: 50m
             # memory: 200Mi
           limits:
             cpu: 500m
@@ -88,25 +88,25 @@ spec:
     app: azure-vote-front
 
 
----
-apiVersion: autoscaling/v2beta2
-kind: HorizontalPodAutoscaler
-metadata:
-  name: azure-vote-back
-spec:
-  scaleTargetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: azure-vote-back
-  minReplicas: 1
-  maxReplicas: 10
-  metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 50
+# ---
+# apiVersion: autoscaling/v2beta2
+# kind: HorizontalPodAutoscaler
+# metadata:
+#   name: azure-vote-back
+# spec:
+#   scaleTargetRef:
+#     apiVersion: apps/v1
+#     kind: Deployment
+#     name: azure-vote-back
+#   minReplicas: 1
+#   maxReplicas: 10
+#   metrics:
+#   - type: Resource
+#     resource:
+#       name: cpu
+#       target:
+#         type: Utilization
+#         averageUtilization: 50
   # - type: Pods
   #   pods:
   #     metric:

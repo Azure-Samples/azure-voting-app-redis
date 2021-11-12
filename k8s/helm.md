@@ -7,10 +7,19 @@ helm upgrade --install -n monitoring prometheus-stack prometheus-community/kube-
 
 ## INGRESS
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-helm upgrade --install nginx-ingress ingress-nginx/ingress-nginx --namespace ingress
+helm upgrade --install nginx-ingress ingress-nginx/ingress-nginx \
+--namespace ingress \
+--set controller.metrics.enabled=true \
+--set-string controller.podAnnotations."prometheus\.io/scrape"="true" \
+--set-string controller.podAnnotations."prometheus\.io/port"="10254"
 
 ## Cert-manager
 helm upgrade --install cert-manager jetstack/cert-manager --namespace ingress --set installCRDs=true --set prometheus.enabled=true
+
+
+## KEDA
+helm repo add kedacore https://kedacore.github.io/charts
+helm update --install keda kedacore/keda --namespace ingress-nginx
 
 <!-- 
 ## kubed 

@@ -23,6 +23,65 @@ spec:
       - predscaling01.natzkalabs.com
       secretName: predscaling01-tls
 
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: prometheus-stack-kube-prom-nginx
+  namespace: monitoring
+  labels:
+    app: nginx-ingress
+spec:
+  endpoints:
+  - interval: 10s
+    port: metrics
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: ingress-nginx
+  namespaceSelector:
+    matchNames:
+    - ingress
+
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: prometheus-azure-vote-back
+  namespace: default
+spec:
+  scaleTargetRef:
+    name: azure-vote-back
+  pollingInterval: 15
+  cooldownPeriod:  30
+  minReplicaCount: 1
+  maxReplicaCount: 10
+  advanced:
+    # restoreToOriginalReplicaCount: true
+    horizontalPodAutoscalerConfig:
+      behavior:
+        scaleDown:
+          stabilizationWindowSeconds: 30
+          # policies:
+          # - type: Percent
+          #   value: 100
+          #   periodSeconds: 15
+  triggers:
+  - type: prometheus
+    metadata:
+      serverAddress: http://prometheus-stack-kube-prom-prometheus.monitoring.svc.cluster.local:9090
+      metricName: number_of_requests
+      threshold: '1'
+      query: sum(rate(nginx_ingress_controller_nginx_process_connections[1m]))
+  - type: cpu
+    metadata:
+      type: AverageValue
+      value: "300m"
+  # - type: memory
+  #   metadata:
+  #     type: AverageValue
+  #     value: "75"
+  
+
 # --- 
 # apiVersion: networking.k8s.io/v1
 # kind: Ingress
