@@ -10,9 +10,9 @@ services:
 
   azure-vote-front:
     build: ./azure-vote
-    image: mcr.microsoft.com/azuredocs/azure-vote-front:v1
+    image: qfsbbcontainerreg.azurecr.io/azure-vote-front:v1
     container_name: azure-vote-front
     environment:
       REDIS: azure-vote-back
     ports:
-        - "8080:80"
+        - "80:80"
