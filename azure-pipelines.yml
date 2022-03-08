@@ -17,8 +17,7 @@ stages:
   jobs:
   - job: Build
     displayName: Build
-    pool:
-      vmImage: ubuntu-latest
+    pool: Self-hosted
     steps:
     - task: Docker@2
       displayName: Build an image
@@ -34,8 +33,7 @@ stages:
   jobs:
   - job: Push
     displayName: Push
-    pool:
-        vmImage: ubuntu-latest
+    pool: Self-hosted
     steps:
     - task: ECRPushImage@1
       inputs:
