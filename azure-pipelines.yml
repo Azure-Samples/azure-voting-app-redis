@@ -29,7 +29,6 @@ stages:
         tags: |
           $(tag)
       
-
 - stage: Push
   displayName: Push image
   jobs:
