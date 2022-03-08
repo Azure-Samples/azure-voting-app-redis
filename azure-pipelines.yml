@@ -40,6 +40,6 @@ stages:
         awsCredentials: 'aws-wellszhang'
         regionName: 'ap-southeast-2'
         imageSource: 'imagename'
-        sourceImageName: 'azure-vote'
-        repositoryName: 'azure-vote'
+        sourceImageName: "azure-vote:$(tag)"
+        repositoryName: "azure-vote:$(tag)"
         autoCreateRepository: true
