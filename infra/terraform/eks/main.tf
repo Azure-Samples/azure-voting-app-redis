@@ -1,10 +1,10 @@
 provider "aws" {
   region = local.region
-  profile = "personal"
+  profile = var.default
 }
 
 locals {
-  name            = "devops-demo-eks"
+  name            = "devops-${var.env}-eks"
   cluster_version = "1.21"
   region          = "ap-southeast-2"
 
