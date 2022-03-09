@@ -41,6 +41,7 @@ stages:
       inputs:
         provider: 'aws'
         command: 'apply'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/infra/terraform/eks'
         commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/infra/terraform/eks/demo.tfvars" -auto-approve'
         environmentServiceNameAWS: 'aws4terraform'
         
