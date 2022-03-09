@@ -34,7 +34,8 @@ stages:
       inputs:
         provider: 'aws'
         command: 'plan'
-        commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/infra/terraform/eks/demo.tfvars"'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/infra/terraform/eks'
+        commandOptions: '-var-file="./demo.tfvars"'
         environmentServiceNameAWS: 'aws4terraform'
 
 - stage: Build
