@@ -64,6 +64,8 @@ stages:
         connectionType: 'None'
         command: 'get'
         arguments: 'svc -A'
+        secretType: 'dockerRegistry'
+        containerRegistryType: 'Azure Container Registry'
 
 - stage: Build
   displayName: Build image
