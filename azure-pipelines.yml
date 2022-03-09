@@ -45,6 +45,26 @@ stages:
         commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/infra/terraform/eks/demo.tfvars" -auto-approve'
         environmentServiceNameAWS: 'aws4terraform'
         
+- stage: 
+  displayName: Test EKS
+  jobs:
+  - job: Test-EKS
+    displayName: Test-EKS
+    pool: Self-hosted
+    steps:
+    - task: AWSCLI@1
+      inputs:
+        awsCredentials: 'aws-wellszhang'
+        regionName: 'ap-southeast-2'
+        awsCommand: 'eks'
+        awsSubCommand: 'update-kubeconfig'
+        awsArguments: '--region ap-southeast-2 --name eks-demo-VUNDtza6'
+    - task: Kubernetes@1
+    inputs:
+      connectionType: 'None'
+      command: 'get'
+      arguments: 'svc -A'
+
 - stage: Build
   displayName: Build image
   jobs:
