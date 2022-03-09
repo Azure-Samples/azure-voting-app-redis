@@ -12,6 +12,25 @@ variables:
   tag: '$(Build.BuildId)'
 
 stages:
+- stage: 
+  displayName: Provision Infra
+  jobs:
+  - job: Terraform
+    displayName: Terraform
+    pool: Self-hosted
+    steps:
+    - task: TerraformInstaller@0
+      inputs:
+        terraformVersion: 'latest'
+    - task: TerraformTaskV2@2
+      inputs:
+        provider: 'aws'
+        command: 'init'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/infra/terraform/eks'
+        backendServiceAWS: 'aws4terraform'
+        backendAWSBucketName: 'tfe-state-demo'
+        backendAWSKey: 'tf'
+        
 - stage: Build
   displayName: Build image
   jobs:
