@@ -30,7 +30,13 @@ stages:
         backendServiceAWS: 'aws4terraform'
         backendAWSBucketName: 'tfe-state-demo'
         backendAWSKey: 'tf'
-        
+    - task: TerraformTaskV2@2
+      inputs:
+        provider: 'aws'
+        command: 'plan'
+        commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/infra/terraform/eks/demo.tfvars"'
+        environmentServiceNameAWS: 'aws4terraform'
+
 - stage: Build
   displayName: Build image
   jobs:
