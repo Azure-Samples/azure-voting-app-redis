@@ -36,8 +36,14 @@ stages:
         command: 'plan'
         workingDirectory: '$(System.DefaultWorkingDirectory)/infra/terraform/eks'
         commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/infra/terraform/eks/demo.tfvars"'
+        environmentServiceNameAWS: 'aws4terraform'  
+    - task: TerraformTaskV2@2
+      inputs:
+        provider: 'aws'
+        command: 'apply'
+        commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/infra/terraform/eks/demo.tfvars" -auto-approve'
         environmentServiceNameAWS: 'aws4terraform'
-
+        
 - stage: Build
   displayName: Build image
   jobs:
