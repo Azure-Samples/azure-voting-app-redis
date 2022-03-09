@@ -48,8 +48,8 @@ stages:
 - stage: 
   displayName: Test EKS
   jobs:
-  - job: Test-EKS
-    displayName: Test-EKS
+  - job: Test EKS
+    displayName: Test EKS
     pool: Self-hosted
     steps:
     - task: AWSCLI@1
