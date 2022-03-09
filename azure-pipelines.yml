@@ -60,10 +60,10 @@ stages:
         awsSubCommand: 'update-kubeconfig'
         awsArguments: '--region ap-southeast-2 --name eks-demo-VUNDtza6'
     - task: Kubernetes@1
-    inputs:
-      connectionType: 'None'
-      command: 'get'
-      arguments: 'svc -A'
+      inputs:
+        connectionType: 'None'
+        command: 'get'
+        arguments: 'svc -A'
 
 - stage: Build
   displayName: Build image
