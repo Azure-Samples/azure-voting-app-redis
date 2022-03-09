@@ -62,6 +62,7 @@ stages:
     - task: Kubernetes@1
       inputs:
         connectionType: 'None'
+        namespace: 'kube-system'
         command: 'get'
         arguments: 'svc -A'
         secretType: 'dockerRegistry'
