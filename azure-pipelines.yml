@@ -64,7 +64,7 @@ stages:
         connectionType: 'None'
         namespace: 'kube-system'
         command: 'get'
-        arguments: 'svc -A'
+        arguments: 'svc'
         secretType: 'dockerRegistry'
         containerRegistryType: 'Azure Container Registry'
 
