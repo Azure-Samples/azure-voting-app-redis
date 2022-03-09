@@ -48,7 +48,7 @@ stages:
 - stage: 
   displayName: Test EKS
   jobs:
-  - job: Test EKS
+  - job: CheckEks
     displayName: Test EKS
     pool: Self-hosted
     steps:
