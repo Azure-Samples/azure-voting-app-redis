@@ -27,26 +27,12 @@ stages:
         script: |
           cd $(System.DefaultWorkingDirectory)/infra/terraform/eks
           terraform init
-    - task: TerraformTaskV2@2
+          terraform plan -var-file="$(System.DefaultWorkingDirectory)/infra/terraform/eks/demo.tfvars"
+    - task: CmdLine@2
       inputs:
-        provider: 'aws'
-        command: 'init'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/infra/terraform/eks'
-        
-    - task: TerraformTaskV2@2
-      inputs:
-        provider: 'aws'
-        command: 'plan'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/infra/terraform/eks'
-        commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/infra/terraform/eks/demo.tfvars"'
-        environmentServiceNameAWS: 'aws4terraform'  
-    - task: TerraformTaskV2@2
-      inputs:
-        provider: 'aws'
-        command: 'apply'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/infra/terraform/eks'
-        commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/infra/terraform/eks/demo.tfvars" -auto-approve'
-        environmentServiceNameAWS: 'aws4terraform'
+        script: |
+          cd $(System.DefaultWorkingDirectory)/infra/terraform/eks
+          terraform apply -var-file="$(System.DefaultWorkingDirectory)/infra/terraform/eks/demo.tfvars"
 
 - stage: BuildAndPush
   displayName: Build & Push image
