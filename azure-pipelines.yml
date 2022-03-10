@@ -78,6 +78,7 @@ stages:
         script: |
           # Write your commands here 
           helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
+          helm uninstall kubernetes-dashboard
           helm install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard
 
 - stage: 
