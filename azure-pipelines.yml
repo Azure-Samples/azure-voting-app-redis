@@ -60,7 +60,26 @@ stages:
         repositoryName: 'azure-vote'
         pushTag: '$(tag)'
         autoCreateRepository: true
-        
+
+- stage:      
+  displayName: Install k8s Dashboard
+  jobs:
+  - job: 
+    displayName: Install k8s Dashboard
+    pool: Self-hosted
+    steps: 
+    - task: HelmInstaller@0
+      inputs:
+        helmVersion: '2.14.1'
+        installKubectl: true
+    - task: Bash@3
+      inputs:
+        targetType: 'inline'
+        script: |
+          # Write your commands here 
+          helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
+          helm install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard
+
 - stage: 
   displayName: Deploy Service
   jobs:
