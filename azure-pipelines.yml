@@ -33,7 +33,7 @@ stages:
       inputs:
         script: |
           cd $(System.DefaultWorkingDirectory)/infra/terraform/eks
-          terraform apply -var-file="$(System.DefaultWorkingDirectory)/infra/terraform/eks/demo.tfvars"
+          terraform apply -var-file="$(System.DefaultWorkingDirectory)/infra/terraform/eks/demo.tfvars" -auto-apporve=yes
 
 - stage: BuildAndPush
   displayName: Build & Push image
