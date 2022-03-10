@@ -44,32 +44,9 @@ stages:
         workingDirectory: '$(System.DefaultWorkingDirectory)/infra/terraform/eks'
         commandOptions: '-var-file="$(System.DefaultWorkingDirectory)/infra/terraform/eks/demo.tfvars" -auto-approve'
         environmentServiceNameAWS: 'aws4terraform'
-        
-- stage: 
-  displayName: Test EKS
-  jobs:
-  - job: CheckEks
-    displayName: Test EKS
-    pool: Self-hosted
-    steps:
-    - task: AWSCLI@1
-      inputs:
-        awsCredentials: 'aws-wellszhang'
-        regionName: 'ap-southeast-2'
-        awsCommand: 'eks'
-        awsSubCommand: 'update-kubeconfig'
-        awsArguments: '--region ap-southeast-2 --name eks-demo-VUNDtza6'
-    - task: Kubernetes@1
-      inputs:
-        connectionType: 'None'
-        namespace: 'kube-system'
-        command: 'get'
-        arguments: 'svc'
-        secretType: 'dockerRegistry'
-        containerRegistryType: 'Azure Container Registry'
 
-- stage: Build
-  displayName: Build image
+- stage: BuildAndPush
+  displayName: Build & Push image
   jobs:
   - job: Build
     displayName: Build
@@ -80,17 +57,9 @@ stages:
       inputs:
         command: build
         repository: 'azure-vote'
-        dockerfile: '$(Build.SourcesDirectory)/azure-vote/Dockerfile'
+        dockerfile: 'azure-vote/Dockerfile'
         tags: |
           $(tag)
-      
-- stage: Push
-  displayName: Push image
-  jobs:
-  - job: Push
-    displayName: Push
-    pool: Self-hosted
-    steps:
     - task: ECRPushImage@1
       inputs:
         awsCredentials: 'aws-wellszhang'
@@ -101,3 +70,37 @@ stages:
         repositoryName: 'azure-vote'
         pushTag: '$(tag)'
         autoCreateRepository: true
+        
+- stage: 
+  displayName: Deploy Service
+  jobs:
+  - job: DeploySvc
+    displayName: Deploy Service to EKS
+    pool: Self-hosted
+    steps:
+    - task: AWSCLI@1
+      displayName: update-kubeconfig
+      inputs:
+        awsCredentials: 'aws-wellszhang'
+        regionName: 'ap-southeast-2'
+        awsCommand: 'eks'
+        awsSubCommand: 'update-kubeconfig'
+        awsArguments: '--region ap-southeast-2 --name eks-demo-VUNDtza6'       
+
+    - task: Kubernetes@1
+      displayName: kubectl get service
+      inputs:
+        connectionType: 'None'
+        namespace: 'kube-system'
+        command: 'get'
+        arguments: 'svc'
+        
+    - task: Kubernetes@1
+      displayName: kubectl apply
+      inputs:
+        connectionType: 'None'
+        namespace: 'default'
+        command: 'apply'
+        useConfigurationFile: true
+        configuration: '$(System.DefaultWorkingDirectory)/azure-vote-all-in-one-redis.yaml'
+        outputFormat: 'yaml'
