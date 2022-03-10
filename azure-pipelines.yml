@@ -83,33 +83,38 @@ stages:
 - stage: 
   displayName: Deploy Service
   jobs:
-  - job: DeploySvc
+  - deployment: DeploySvc
     displayName: Deploy Service to EKS
     pool: Self-hosted
-    steps:
-    - task: AWSCLI@1
-      displayName: update-kubeconfig
-      inputs:
-        awsCredentials: 'aws-wellszhang'
-        regionName: 'ap-southeast-2'
-        awsCommand: 'eks'
-        awsSubCommand: 'update-kubeconfig'
-        awsArguments: '--region ap-southeast-2 --name eks-dev-7KXINSCx'       
+    environment: Development
+    strategy:
+    # Default deployment strategy, more coming...
+      runOnce:
+        deploy:
+          steps:
+          - task: AWSCLI@1
+            displayName: update-kubeconfig
+            inputs:
+              awsCredentials: 'aws-wellszhang'
+              regionName: 'ap-southeast-2'
+              awsCommand: 'eks'
+              awsSubCommand: 'update-kubeconfig'
+              awsArguments: '--region ap-southeast-2 --name eks-dev-7KXINSCx'       
 
-    - task: Kubernetes@1
-      displayName: kubectl get service
-      inputs:
-        connectionType: 'None'
-        namespace: 'kube-system'
-        command: 'get'
-        arguments: 'svc'
-        
-    - task: Kubernetes@1
-      displayName: kubectl apply
-      inputs:
-        connectionType: 'None'
-        namespace: 'default'
-        command: 'apply'
-        useConfigurationFile: true
-        configuration: '$(System.DefaultWorkingDirectory)/azure-vote-all-in-one-redis.yaml'
-        outputFormat: 'yaml'
+          - task: Kubernetes@1
+            displayName: kubectl get service
+            inputs:
+              connectionType: 'None'
+              namespace: 'kube-system'
+              command: 'get'
+              arguments: 'svc'
+              
+          - task: Kubernetes@1
+            displayName: kubectl apply
+            inputs:
+              connectionType: 'None'
+              namespace: 'default'
+              command: 'apply'
+              useConfigurationFile: true
+              configuration: '$(System.DefaultWorkingDirectory)/azure-vote-all-in-one-redis.yaml'
+              outputFormat: 'yaml'
