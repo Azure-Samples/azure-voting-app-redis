@@ -22,6 +22,11 @@ stages:
     - task: TerraformInstaller@0
       inputs:
         terraformVersion: 'latest'
+    - task: CmdLine@2
+      inputs:
+        script: |
+          cd $(System.DefaultWorkingDirectory)/infra/terraform/eks
+          terraform init
     - task: TerraformTaskV2@2
       inputs:
         provider: 'aws'
