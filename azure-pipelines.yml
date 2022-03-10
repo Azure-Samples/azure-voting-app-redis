@@ -75,7 +75,7 @@ stages:
         regionName: 'ap-southeast-2'
         awsCommand: 'eks'
         awsSubCommand: 'update-kubeconfig'
-        awsArguments: '--region ap-southeast-2 --name eks-demo-VUNDtza6'       
+        awsArguments: '--region ap-southeast-2 --name eks-demo-7KXINSCx'       
 
     - task: Kubernetes@1
       displayName: kubectl get service
