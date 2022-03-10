@@ -26,6 +26,14 @@ terraform {
     }
   }
 
+    cloud {
+    organization = "easycloud-wells"
+
+    workspaces {
+      name = "ws-ado-demo"
+    }
+  }
+
   required_version = ">= 0.14"
 }
 
