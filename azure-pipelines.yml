@@ -23,12 +23,13 @@ stages:
       inputs:
         terraformVersion: 'latest'
     - task: CmdLine@2
+      displayName: Terraform Init
       inputs:
         script: |
           cd $(System.DefaultWorkingDirectory)/infra/terraform/eks
           terraform init
-          terraform plan -var-file="$(System.DefaultWorkingDirectory)/infra/terraform/eks/demo.tfvars"
     - task: CmdLine@2
+      displayName: Terraform Run
       inputs:
         script: |
           cd $(System.DefaultWorkingDirectory)/infra/terraform/eks
