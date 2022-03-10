@@ -27,9 +27,7 @@ stages:
         provider: 'aws'
         command: 'init'
         workingDirectory: '$(System.DefaultWorkingDirectory)/infra/terraform/eks'
-        backendServiceAWS: 'aws4terraform'
-        backendAWSBucketName: 'tfe-state-demo'
-        backendAWSKey: 'tf'
+        
     - task: TerraformTaskV2@2
       inputs:
         provider: 'aws'
