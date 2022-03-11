@@ -27,10 +27,10 @@ terraform {
   }
 
     cloud {
-    organization = "easycloud-wells"
+    organization = "#{tf_organization}#"
 
     workspaces {
-      name = "ws-ado-demo"
+      name = "#{tf_workspace}#"
     }
   }
 
