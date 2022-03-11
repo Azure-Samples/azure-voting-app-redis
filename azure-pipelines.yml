@@ -9,7 +9,9 @@ resources:
 - repo: self
 
 variables:
-  tag: '$(Build.BuildId)'
+  - group: 'terraform-cloud-config'
+  - name: 'tag'
+    value: '$(Build.BuildId)'
 
 stages:
 - stage: 
@@ -19,6 +21,19 @@ stages:
     displayName: Terraform
     pool: Self-hosted
     steps:
+    - task: replacetokens@5
+      inputs:
+        rootDirectory: '$(System.DefaultWorkingDirectory)/infra/terraform'
+        targetFiles: '**/*.tf'
+        encoding: 'auto'
+        tokenPattern: 'default'
+        writeBOM: true
+        actionOnMissing: 'warn'
+        keepToken: false
+        actionOnNoFiles: 'continue'
+        enableTransforms: false
+        useLegacyPattern: false
+        enableTelemetry: true
     - task: TerraformInstaller@0
       inputs:
         terraformVersion: 'latest'
