@@ -1,0 +1,57 @@
+# Docker
+# Build a Docker image
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+pr:
+- master
+
+trigger: none
+
+resources:
+- repo: self
+
+variables:
+  - name: 'tag'
+    value: '$(Build.BuildId)'
+
+stages:
+- stage: 
+  displayName: Validate terraform plan
+  jobs:
+  - job: Terraform
+    displayName: Terraform
+    pool: Self-hosted
+    steps:
+    - task: oneLuckiDevJson2Variable@1
+      inputs:
+        jsonFile: '$(System.DefaultWorkingDirectory)/variables/variables_$(EnvShort).json'
+        shouldPrefixVariables: false
+        
+    - task: replacetokens@5
+      inputs:
+        rootDirectory: '$(System.DefaultWorkingDirectory)/infra/terraform'
+        targetFiles: '**/*.tf'
+        encoding: 'auto'
+        tokenPattern: 'default'
+        writeBOM: true
+        actionOnMissing: 'fail'
+        keepToken: false
+        actionOnNoFiles: 'continue'
+        enableTransforms: false
+        useLegacyPattern: false
+        enableTelemetry: true
+    - task: TerraformInstaller@0
+      inputs:
+        terraformVersion: 'latest'
+    - task: CmdLine@2
+      displayName: Terraform Init
+      inputs:
+        script: |
+          cd $(System.DefaultWorkingDirectory)/infra/terraform/eks
+          terraform init
+    - task: CmdLine@2
+      displayName: Terraform Plan
+      inputs:
+        script: |
+          cd $(System.DefaultWorkingDirectory)/infra/terraform/eks
+          terraform plan -var-file="$(System.DefaultWorkingDirectory)/infra/terraform/eks/tf_$(EnvShort).tfvars"
