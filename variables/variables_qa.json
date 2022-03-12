@@ -1,0 +1,6 @@
+{
+    "AwsRegion": "ap-southeast-2",
+    "EksName": "eks-qa-7KXINSCx",
+    "tf_organization": "easycloud-wells",
+    "tf_workspace": "ws-ado-qa"
+}

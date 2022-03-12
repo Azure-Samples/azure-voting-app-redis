@@ -48,7 +48,7 @@ stages:
       inputs:
         script: |
           cd $(System.DefaultWorkingDirectory)/infra/terraform/eks
-          terraform apply -auto-approve -var-file="$(System.DefaultWorkingDirectory)/infra/terraform/eks/demo.tfvars"
+          terraform apply -auto-approve -var-file="$(System.DefaultWorkingDirectory)/infra/terraform/eks/tf_$(EnvShort).tfvars"
 
 - stage: BuildAndPush
   displayName: Build & Push image
@@ -68,7 +68,7 @@ stages:
     - task: ECRPushImage@1
       inputs:
         awsCredentials: 'aws-wellszhang'
-        regionName: 'ap-southeast-2'
+        regionName: '$(AwsRegion)'
         imageSource: 'imagename'
         sourceImageName: 'azure-vote'
         sourceImageTag: '$(tag)'
@@ -102,7 +102,7 @@ stages:
   - deployment: DeploySvc
     displayName: Deploy Service to EKS
     pool: Self-hosted
-    environment: Development
+    environment: $(EnvLong)
     strategy:
     # Default deployment strategy, more coming...
       runOnce:
@@ -112,10 +112,10 @@ stages:
             displayName: update-kubeconfig
             inputs:
               awsCredentials: 'aws-wellszhang'
-              regionName: 'ap-southeast-2'
+              regionName: '$(AwsRegion)'
               awsCommand: 'eks'
               awsSubCommand: 'update-kubeconfig'
-              awsArguments: '--region ap-southeast-2 --name eks-dev-7KXINSCx'       
+              awsArguments: '--region $(AwsRegion) --name $(EksName)'       
 
           - task: Kubernetes@1
             displayName: kubectl get service
