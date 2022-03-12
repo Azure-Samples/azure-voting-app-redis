@@ -5,6 +5,8 @@
 trigger:
 - master
 
+pr: none
+
 resources:
 - repo: self
 
@@ -96,7 +98,7 @@ stages:
       inputs:
         jsonFile: '$(System.DefaultWorkingDirectory)/variables/variables_$(EnvShort).json'
         shouldPrefixVariables: false
-        
+
     - task: AWSCLI@1
       displayName: update-kubeconfig
       inputs:
