@@ -96,6 +96,14 @@ stages:
       inputs:
         jsonFile: '$(System.DefaultWorkingDirectory)/variables/variables_$(EnvShort).json'
         shouldPrefixVariables: false
+    - task: AWSCLI@1
+      displayName: update-kubeconfig
+      inputs:
+        awsCredentials: 'aws-wellszhang'
+        regionName: '$(AwsRegion)'
+        awsCommand: 'eks'
+        awsSubCommand: 'update-kubeconfig'
+        awsArguments: '--region $(AwsRegion) --name $(EksName)' 
 
     - task: HelmInstaller@0
       inputs:
