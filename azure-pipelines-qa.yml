@@ -9,7 +9,6 @@ resources:
 - repo: self
 
 variables:
-  - group: 'terraform-cloud-config'
   - name: 'tag'
     value: '$(Build.BuildId)'
 
@@ -21,6 +20,11 @@ stages:
     displayName: Terraform
     pool: Self-hosted
     steps:
+    - task: oneLuckiDevJson2Variable@1
+      inputs:
+        jsonFile: '$(System.DefaultWorkingDirectory)/variables/variables_$(EnvShort).json'
+        shouldPrefixVariables: false
+        
     - task: replacetokens@5
       inputs:
         rootDirectory: '$(System.DefaultWorkingDirectory)/infra/terraform'
@@ -28,7 +32,7 @@ stages:
         encoding: 'auto'
         tokenPattern: 'default'
         writeBOM: true
-        actionOnMissing: 'warn'
+        actionOnMissing: 'fail'
         keepToken: false
         actionOnNoFiles: 'continue'
         enableTransforms: false
@@ -57,6 +61,11 @@ stages:
     displayName: Build
     pool: Self-hosted
     steps:
+    - task: oneLuckiDevJson2Variable@1
+      inputs:
+        jsonFile: '$(System.DefaultWorkingDirectory)/variables/variables_$(EnvShort).json'
+        shouldPrefixVariables: false
+
     - task: Docker@2
       displayName: Build an image
       inputs:
@@ -83,6 +92,11 @@ stages:
     displayName: Install k8s Dashboard
     pool: Self-hosted
     steps: 
+    - task: oneLuckiDevJson2Variable@1
+      inputs:
+        jsonFile: '$(System.DefaultWorkingDirectory)/variables/variables_$(EnvShort).json'
+        shouldPrefixVariables: false
+
     - task: HelmInstaller@0
       inputs:
         helmVersion: '2.14.1'
@@ -108,6 +122,11 @@ stages:
       runOnce:
         deploy:
           steps:
+          - task: oneLuckiDevJson2Variable@1
+            inputs:
+              jsonFile: '$(System.DefaultWorkingDirectory)/variables/variables_$(EnvShort).json'
+              shouldPrefixVariables: false
+          
           - task: AWSCLI@1
             displayName: update-kubeconfig
             inputs:
