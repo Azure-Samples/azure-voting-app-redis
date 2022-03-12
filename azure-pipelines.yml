@@ -9,7 +9,6 @@ resources:
 - repo: self
 
 variables:
-  - group: 'terraform-cloud-config'
   - name: 'tag'
     value: '$(Build.BuildId)'
 
@@ -33,7 +32,7 @@ stages:
         encoding: 'auto'
         tokenPattern: 'default'
         writeBOM: true
-        actionOnMissing: 'warn'
+        actionOnMissing: 'fail'
         keepToken: false
         actionOnNoFiles: 'continue'
         enableTransforms: false
