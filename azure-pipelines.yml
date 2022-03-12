@@ -21,6 +21,11 @@ stages:
     displayName: Terraform
     pool: Self-hosted
     steps:
+    - task: oneLuckiDevJson2Variable@1
+      inputs:
+        jsonFile: '$(System.DefaultWorkingDirectory)/variables/variables_$(EnvShort).json'
+        shouldPrefixVariables: false
+        
     - task: replacetokens@5
       inputs:
         rootDirectory: '$(System.DefaultWorkingDirectory)/infra/terraform'
