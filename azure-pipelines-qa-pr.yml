@@ -5,6 +5,8 @@
 pr:
 - master
 
+trigger: none
+
 resources:
 - repo: self
 
