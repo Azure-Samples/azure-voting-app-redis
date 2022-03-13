@@ -1,5 +1,5 @@
 locals {
-  cluster_name = "#{EksName}#"
+  cluster_name = var.eks_name
 }
 
 module "eks" {
