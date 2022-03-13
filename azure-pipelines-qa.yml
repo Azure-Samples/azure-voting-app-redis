@@ -30,7 +30,9 @@ stages:
     - task: replacetokens@5
       inputs:
         rootDirectory: '$(System.DefaultWorkingDirectory)/infra/terraform'
-        targetFiles: '**/*.tf'
+        targetFiles: |
+          **/*.tf
+          **/*.tfvars
         encoding: 'auto'
         tokenPattern: 'default'
         writeBOM: true
