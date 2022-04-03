@@ -84,7 +84,7 @@ jobs:
         # The json file.
         filename: variables/variables_dev.json
         # The prefix for variables.
-        prefix: no
+        prefix: ''
     
     - name: convert-env-json
       # You may pin to the exact commit or the version.
