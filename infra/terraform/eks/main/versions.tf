@@ -26,11 +26,11 @@ terraform {
     }
   }
 
-    cloud {
-    organization = "#{tf_organization}#"
+  cloud {
+    organization = "#{VAR_tf_organization}#"
 
     workspaces {
-      name = "#{tf_workspace}#"
+      name = "#{VAR_tf_workspace}#"
     }
   }
 
