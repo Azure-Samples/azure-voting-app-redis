@@ -115,6 +115,7 @@ jobs:
 
   qa_terraform:
     name: 'QA'
+    needs: dev_terraform
     runs-on: ubuntu-latest
     environment: qa
     env:
