@@ -75,7 +75,17 @@ jobs:
     - name: pwd 
       run:
         ls -l ./variables/variables_dev.json
-        
+
+    - name: JSON to environment variables
+      # You may pin to the exact commit or the version.
+      # uses: rgarcia-phi/json-to-variables@9835d537368468c4e4de5254dc3efeadda183793
+      uses: rgarcia-phi/json-to-variables@v1.1.0
+      with:
+        # The json file.
+        filename: variables/variables_dev.json
+        # The prefix for variables.
+        prefix: no
+    
     - name: convert-env-json
       # You may pin to the exact commit or the version.
       # uses: ricosandyca/convert-env-json@cb9ecabfca143937f95bb81de4bb4fa6747284db
@@ -84,7 +94,7 @@ jobs:
         # convert mode, can be either `env-to-json` or `json-to-env`
         type: json-to-env
         # full path of file to convert
-        input_path: ./variables/variables_dev.json
+        input_path: variables/variables_dev.json
         
     - name: Replace tokens
       # You may pin to the exact commit or the version.
