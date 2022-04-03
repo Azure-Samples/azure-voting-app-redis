@@ -55,6 +55,8 @@ jobs:
     name: 'Terraform'
     runs-on: ubuntu-latest
     environment: production
+    env:
+      tf-directory: ./infra/terraform/eks
 
     # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:
@@ -72,10 +74,6 @@ jobs:
       with:
         cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
       
-    - name: pwd 
-      run:
-        ls -l ./variables/variables_dev.json
-
     - name: JSON to environment variables
       # You may pin to the exact commit or the version.
       # uses: rgarcia-phi/json-to-variables@9835d537368468c4e4de5254dc3efeadda183793
@@ -85,16 +83,6 @@ jobs:
         filename: variables/variables_dev.json
         # The prefix for variables.
         prefix: ''
-    
-    - name: convert-env-json
-      # You may pin to the exact commit or the version.
-      # uses: ricosandyca/convert-env-json@cb9ecabfca143937f95bb81de4bb4fa6747284db
-      uses: ricosandyca/convert-env-json@v1.0.1
-      with:
-        # convert mode, can be either `env-to-json` or `json-to-env`
-        type: json-to-env
-        # full path of file to convert
-        input_path: variables/variables_dev.json
         
     - name: Replace tokens
       # You may pin to the exact commit or the version.
@@ -103,25 +91,25 @@ jobs:
       with:
         # 
         # 
-        files: ./infra/terraform/eks/*
+        files: infra/terraform/eks/*
     
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
       run:
-        cd ./infra/terraform/eks
         terraform init
+      working-directory: ${{env.tf-directory}}
 
     # Checks that all Terraform configuration files adhere to a canonical format
     - name: Terraform Format
       run:
-        cd ./infra/terraform/eks
         terraform fmt -check
+      working-directory: ${{env.tf-directory}}
 
     # Generates an execution plan for Terraform
     - name: Terraform Plan
       run:
-        cd ./infra/terraform/eks
         terraform plan
+      working-directory: ${{env.tf-directory}}
 
       # On push to master, build or change infrastructure according to Terraform configuration files
       # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
@@ -130,3 +118,4 @@ jobs:
       run:
         cd ./infra/terraform/eks
         # terraform apply -auto-approve
+      working-directory: ${{env.tf-directory}}
