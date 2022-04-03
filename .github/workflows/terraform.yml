@@ -112,3 +112,65 @@ jobs:
       run:
         terraform apply -var-file="../environments/${{env.env-name}}/tf_${{env.env-name}}.tfvars"
       working-directory: ${{env.tf-directory}}
+
+  qa_terraform:
+    name: 'QA'
+    runs-on: ubuntu-latest
+    environment: qa
+    env:
+      tf-directory: ./infra/terraform/eks/main
+      env-name: 'qa'
+
+    # Use the Bash shell regardless whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+      
+    - name: JSON to environment variables
+      # You may pin to the exact commit or the version.
+      # uses: rgarcia-phi/json-to-variables@9835d537368468c4e4de5254dc3efeadda183793
+      uses: rgarcia-phi/json-to-variables@v1.1.0
+      with:
+        # The json file.
+        filename: infra/terraform/eks/environments/${{env.env-name}}/variables_${{env.env-name}}.json
+        # The prefix for variables.
+        prefix: VAR
+        
+    - name: 4lch4/Replace Tokens
+      # You may pin to the exact commit or the version.
+      # uses: 4lch4/replace-tokens@0865d3b76a934b568c79dbf554158e85ce59a0ea
+      uses: 4lch4/replace-tokens@v1.1.0
+      with:
+        # Glob expression, file name, or array of glob/file name
+        files: '["infra/terraform/eks/**/*.*"]'
+    
+    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+    - name: Terraform Init
+      run:
+        terraform init
+      working-directory: ${{env.tf-directory}}
+
+    # Generates an execution plan for Terraform
+    - name: Terraform Plan
+      run:
+        terraform plan -var-file="../environments/${{env.env-name}}/tf_${{env.env-name}}.tfvars"
+      working-directory: ${{env.tf-directory}}
+
+      # On push to master, build or change infrastructure according to Terraform configuration files
+      # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
+    - name: Terraform Apply
+      if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+      run:
+        terraform apply -var-file="../environments/${{env.env-name}}/tf_${{env.env-name}}.tfvars"
+      working-directory: ${{env.tf-directory}}
