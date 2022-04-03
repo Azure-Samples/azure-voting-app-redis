@@ -5,8 +5,8 @@
 pr:
 - master
 
-trigger: none
-
+trigger: none  
+ 
 resources:
 - repo: self
 
