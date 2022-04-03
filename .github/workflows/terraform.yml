@@ -74,8 +74,7 @@ jobs:
       
     - name: pwd 
       run:
-        pwd
-        ls ./variables/variables_dev.json
+        ls -l ./variables/variables_dev.json
         
     - name: convert-env-json
       # You may pin to the exact commit or the version.
