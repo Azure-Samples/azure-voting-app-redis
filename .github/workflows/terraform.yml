@@ -78,7 +78,7 @@ jobs:
       uses: ricosandyca/convert-env-json@v1.0.1
       with:
         # convert mode, can be either `env-to-json` or `json-to-env`
-        type: env-to-json
+        type: json-to-env
         # full path of file to convert
         input_path: ./variables/variables_dev.json
         
