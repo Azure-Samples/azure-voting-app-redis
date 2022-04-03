@@ -85,14 +85,13 @@ jobs:
         # The prefix for variables.
         prefix: VAR
         
-    - name: Replace tokens
+    - name: 4lch4/Replace Tokens
       # You may pin to the exact commit or the version.
-      # uses: cschleiden/replace-tokens@4f7e3d67f3ff2317ae650842145cdbaefba65189
-      uses: cschleiden/replace-tokens@v1.1
+      # uses: 4lch4/replace-tokens@0865d3b76a934b568c79dbf554158e85ce59a0ea
+      uses: 4lch4/replace-tokens@v1.1.0
       with:
-        # 
-        # 
-        files: infra/terraform/eks/*
+        # Glob expression, file name, or array of glob/file name
+        files: '["infra/terraform/eks/**/*.*"]'
     
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
