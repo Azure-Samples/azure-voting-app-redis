@@ -72,6 +72,10 @@ jobs:
       with:
         cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
       
+    - name: pwd 
+      run:
+        pwd
+        
     - name: convert-env-json
       # You may pin to the exact commit or the version.
       # uses: ricosandyca/convert-env-json@cb9ecabfca143937f95bb81de4bb4fa6747284db
