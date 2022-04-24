@@ -1,0 +1,49 @@
+name: Container CICD to kubernetes
+
+on:
+  push:
+    branches: [ actions ]
+    paths: 
+    - azure-vote/**
+
+  workflow_dispatch:
+  
+jobs:
+  CI:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v2
+
+      - name: az CLI login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      
+      - name: ACR login
+        run: az acr login -n acrjenkinssheryaar
+         
+      - name: Build and push image
+        uses: docker/build-push-action@v2
+        with:
+          context: 2_container_ci-cd-kubernetes
+          push: true
+          tags: acrjenkinssheryaar.azurecr.io/azure-vote-front:kube${{ github.run_number }}
+  
+  CD:
+    needs: CI
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v2
+      - name: Azure Kubernetes set context
+        uses: Azure/aks-set-context@v1.1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }} 
+          resource-group: test-actions
+          cluster-name: aks-jenkins-cluster2
+
+      - name: Update deployment
+        run: kubectl set image deployment/azure-vote-front azure-vote-front=acrjenkinssheryaar.azurecr.io/azure-vote-front:kube${{ github.run_number }}
