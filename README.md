@@ -1,3 +1,5 @@
+LA BUENA
+
 ---
 page_type: sample
 languages:
