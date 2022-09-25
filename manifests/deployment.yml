@@ -1,0 +1,19 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: baliganorbiazurevotingappredis 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: baliganorbiazurevotingappredis
+  template:
+    metadata:
+      labels:
+        app: baliganorbiazurevotingappredis 
+    spec:
+      containers:
+        - name: baliganorbiazurevotingappredis 
+          image: azurevoteaksacr.azurecr.io/baliganorbiazurevotingappredis
+          ports:
+          - containerPort: 80
