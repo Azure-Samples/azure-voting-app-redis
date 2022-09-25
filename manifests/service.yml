@@ -1,10 +1,20 @@
 apiVersion: v1
 kind: Service
 metadata:
-    name: baliganorbiazurevotingappredis
+  name: azure-vote-back
 spec:
-    type: LoadBalancer
-    ports:
-    - port: 80 
-    selector:
-        app: baliganorbiazurevotingappredis
+  ports:
+  - port: 6379
+  selector:
+    app: azure-vote-back
+---
+piVersion: v1
+kind: Service
+metadata:
+  name: azure-vote-front
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+  selector:
+    app: azure-vote-front

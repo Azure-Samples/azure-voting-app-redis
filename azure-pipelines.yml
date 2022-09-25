@@ -12,7 +12,7 @@ variables:
 
   # Container registry service connection established during pipeline creation
   dockerRegistryServiceConnection: 'e030054d-9c37-44c4-9054-703137a872d9'
-  imageRepository: 'baliganorbiazurevotingappredis'
+  imageRepository: 'azure-vote-front'
   containerRegistry: 'azurevoteaksacr.azurecr.io'
   dockerfilePath: '**/Dockerfile'
   tag: '$(Build.BuildId)'
@@ -70,7 +70,8 @@ stages:
             inputs:
               action: deploy
               manifests: |
-                $(Pipeline.Workspace)/azure-vote-all-in-one-redis.yaml
+                $(Pipeline.Workspace)/manifests/*deployment.yaml
+                $(Pipeline.Workspace)/manifests/*service.yaml
               imagePullSecrets: |
                 $(imagePullSecret)
               containers: |
