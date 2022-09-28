@@ -13,10 +13,10 @@ spec:
         app: azure-vote-back
     spec:
       nodeSelector:
-        "beta.kubernetes.io/os": linux
+        "kubernetes.io/os": linux
       containers:
       - name: azure-vote-back
-        image: mcr.microsoft.com/oss/bitnami/redis:6.0.8
+        image: redis:latest
         env:
         - name: ALLOW_EMPTY_PASSWORD
           value: "yes"
@@ -54,10 +54,10 @@ spec:
         app: azure-vote-front
     spec:
       nodeSelector:
-        "beta.kubernetes.io/os": linux
+        "kubernetes.io/os": linux
       containers:
       - name: azure-vote-front
-        image: mcr.microsoft.com/azuredocs/azure-vote-front:v1
+        image: cloudnativeadvocates.azurecr.io/azure-vote-front:v1.0.0
         ports:
         - containerPort: 80
         resources:
