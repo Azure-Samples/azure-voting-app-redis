@@ -22,6 +22,12 @@ jobs:
           folder: azure-vote
           branch: master
           tag: ${{ github.sha }}
+      - name: Set up kubelogin for non-interactive login
+        run: |
+          curl -LO https://github.com/Azure/kubelogin/releases/download/v0.0.9/kubelogin-linux-amd64.zip
+          sudo unzip -j kubelogin-linux-amd64.zip -d /usr/local/bin
+          rm -f kubelogin-linux-amd64.zip
+          kubelogin --version
       - name: Azure login
         id: login
         #uses: azure/login@v1.4.3
@@ -36,6 +42,7 @@ jobs:
         with:
           resource-group: '${{ secrets.resource_group }}' 
           cluster-name: '${{ secrets.cluster_name }}'
+          use-kubelogin: 'true'
       - name: Setup kubectl
         id: install-kubectl
         uses: azure/setup-kubectl@v3
