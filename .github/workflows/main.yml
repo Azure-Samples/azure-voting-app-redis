@@ -24,9 +24,12 @@ jobs:
           tag: ${{ github.sha }}
       - name: Azure login
         id: login
-        uses: azure/login@v1.4.3
+        #uses: azure/login@v1.4.3
+        #with:
+          #creds: ${{ secrets.AZURE_CREDENTIALS }}
+        uses: Azure/login@v1
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          creds: '{"clientId":"${{ secrets.service_principal }}","clientSecret":"${{ secrets.service_principal_password }}","subscriptionId":"${{ secrets.subscription }}","tenantId":"${{ secrets.tenant }}"}'
       - name: Set AKS context
         id: set-context
         uses: azure/aks-set-context@v3
