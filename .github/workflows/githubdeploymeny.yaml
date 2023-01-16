@@ -50,7 +50,8 @@ jobs:
                 cluster-name: ${{ env.CLUSTER_NAME }}
                 resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}
             - uses: Azure/k8s-deploy@v4
-            - uses: azure/use-kubelogin@v1
+              name: Setup kubelogin
+            - uses: Azure/use-kubelogin@v1
               name: Deploys application
               with:
                 action: deploy
