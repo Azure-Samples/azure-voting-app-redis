@@ -20,8 +20,8 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
-            - uses: azure/login@v1.4.3
-              name: Azure login
+            - name: Log in with Azure
+              uses: azure/login@v1
               with:
                creds: '${{ secrets.AZURE_CREDENTIALS }}'
             - name: Build and push image to ACR
