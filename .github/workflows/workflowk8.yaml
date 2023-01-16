@@ -2,7 +2,7 @@ name: workflowk8
 "on":
     push:
         branches:
-            - master
+            - dev
     workflow_dispatch: {}
 env:
     ACR_RESOURCE_GROUP: k8s-demo
