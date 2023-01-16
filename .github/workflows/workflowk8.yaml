@@ -35,9 +35,9 @@ jobs:
                tokenPrefix: __ # optional, default is #{
                tokenSuffix: __ # optional, default is }#
               env:
-                 ACR_REPOSITORY: ${{ env.AZURE_CONTAINER_REGISTRY }}
-                 IMAGE_NAME: ${{ env.CONTAINER_NAME }}
-                 IMAGE_TAG: ${{ env.IMAGE_TAG }}
+                 ACR_NAME: ${{ env.AZURE_CONTAINER_REGISTRY }}
+                 IMAGE: ${{ env.CONTAINER_NAME }}
+                 TAG: ${{ env.IMAGE_TAG }}
         
     deploy:
         permissions:
