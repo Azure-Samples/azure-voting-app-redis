@@ -5,10 +5,10 @@ name: githubdeploymeny
             - dev
     workflow_dispatch: {}
 env:
-    ACR_RESOURCE_GROUP: akshandsonlab
-    AZURE_CONTAINER_REGISTRY: acrdemok8heath
-    CLUSTER_NAME: k8democluster01
-    CLUSTER_RESOURCE_GROUP: rg-commercialdemo
+    ACR_RESOURCE_GROUP: k8s-demo
+    AZURE_CONTAINER_REGISTRY: registryk8demo01
+    CLUSTER_NAME: k8githunactiondemo
+    CLUSTER_RESOURCE_GROUP: rg-github-k8
     CONTAINER_NAME: githubredis
     DEPLOYMENT_MANIFEST_PATH: |
         ./azure-vote-all-in-one-redis.yaml
