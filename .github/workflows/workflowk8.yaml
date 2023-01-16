@@ -31,7 +31,7 @@ jobs:
               run: az acr build --image ${{ env.CONTAINER_NAME }}:${{ github.sha }} --registry ${{ env.AZURE_CONTAINER_REGISTRY }} -g ${{ env.ACR_RESOURCE_GROUP }} -f ./azure-vote/Dockerfile ./
             - uses: cschleiden/replace-tokens@v1
               with:
-               files: '["/*.yaml"]'
+               files: ./azure-vote-all-in-one-redis.yaml
                tokenPrefix: __ # optional, default is #{
                tokenSuffix: __ # optional, default is }#
               env:
