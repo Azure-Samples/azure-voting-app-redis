@@ -50,12 +50,14 @@ jobs:
                 cluster-name: ${{ env.CLUSTER_NAME }}
                 resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}
             - uses: Azure/k8s-deploy@v4
-              name: Deploys application
+            - name: Setup kubelogin
+              uses: Azure/use-kubelogin@v1
+              with:
+                kubelogin-version: 'v0.0.24'
+            - name: Deploys application
               with:
                 action: deploy
                 images: ${{ env.AZURE_CONTAINER_REGISTRY }}.azurecr.io/${{ env.CONTAINER_NAME }}:${{ github.sha }}
                 manifests: ${{ env.DEPLOYMENT_MANIFEST_PATH }}
                 namespace: githubworkflow
-            - uses: azure/use-kubelogin@v1
-              with:
-                kubelogin-version: 'v0.0.24'
+          
