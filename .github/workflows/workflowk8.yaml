@@ -2,7 +2,7 @@ name: workflowk8
 "on":
     push:
         branches:
-            - dev
+            - master
     workflow_dispatch: {}
 env:
     ACR_RESOURCE_GROUP: k8s-demo
@@ -28,6 +28,16 @@ jobs:
                 tenant-id: ${{ secrets.AZURE_TENANT_ID }}
             - name: Build and push image to ACR
               run: az acr build --image ${{ env.CONTAINER_NAME }}:${{ github.sha }} --registry ${{ env.AZURE_CONTAINER_REGISTRY }} -g ${{ env.ACR_RESOURCE_GROUP }} -f ./azure-vote/Dockerfile ./
+            - uses: cschleiden/replace-tokens@v1
+              with:
+               files: '["kubernetes/*.yaml"]'
+               tokenPrefix: __ # optional, default is #{
+               tokenSuffix: __ # optional, default is }#
+              env:
+                 ACR_REPOSITORY: ${{ env.AZURE_CONTAINER_REGISTRY }}
+                 IMAGE_NAME: ${{ env.IMAGE_NAME }}
+                 IMAGE_TAG: ${{ env.IMAGE_TAG }}
+        
     deploy:
         permissions:
             actions: read
