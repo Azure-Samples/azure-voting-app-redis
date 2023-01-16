@@ -10,6 +10,7 @@ env:
     CLUSTER_NAME: k8githunactiondemo
     CLUSTER_RESOURCE_GROUP: rg-github-k8
     CONTAINER_NAME: azure-vote
+    IMAGE_TAG: ${{ github.run_number }} # $GITHUB_RUN_NUMBER
     DEPLOYMENT_MANIFEST_PATH: |
         ./azure-vote-all-in-one-redis.yaml
 jobs:
@@ -30,12 +31,12 @@ jobs:
               run: az acr build --image ${{ env.CONTAINER_NAME }}:${{ github.sha }} --registry ${{ env.AZURE_CONTAINER_REGISTRY }} -g ${{ env.ACR_RESOURCE_GROUP }} -f ./azure-vote/Dockerfile ./
             - uses: cschleiden/replace-tokens@v1
               with:
-               files: '["kubernetes/*.yaml"]'
+               files: '["/*.yaml"]'
                tokenPrefix: __ # optional, default is #{
                tokenSuffix: __ # optional, default is }#
               env:
                  ACR_REPOSITORY: ${{ env.AZURE_CONTAINER_REGISTRY }}
-                 IMAGE_NAME: ${{ env.IMAGE_NAME }}
+                 IMAGE_NAME: ${{ env.CONTAINER_NAME }}
                  IMAGE_TAG: ${{ env.IMAGE_TAG }}
         
     deploy:
