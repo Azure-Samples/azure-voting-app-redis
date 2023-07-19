@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mynginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mynginx
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 5 
+  template:
+    metadata:
+      labels:
+        app: mynginx
+    spec:
+      nodeSelector:
+        "beta.kubernetes.io/os": linux
+      containers:
+      - name: mynginx
+        image: chirudeepkurra.azurecr.io/mynginx:1.2-RELEASE
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: 250m
+          limits:
+            cpu: 500m
+        env:
+        - name: REDIS
+          value: "mynginx-image"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mynginx
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+  selector:
+    app: mynginx
