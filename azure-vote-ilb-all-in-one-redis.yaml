@@ -1,0 +1,66 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: azure-vote-back-ilb
+  namespace: default
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: azure-vote-back-ilb
+    spec:
+      containers:
+      - name: azure-vote-back-ilb
+        image: redis
+        ports:
+        - containerPort: 6379
+          name: redis
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: azure-vote-back-ilb
+  namespace: default
+spec:
+  ports:
+  - port: 6379
+  selector:
+    app: azure-vote-back-ilb
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: azure-vote-front-ilb
+  namespace: default
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: azure-vote-front-ilb
+    spec:
+      containers:
+      - name: azure-vote-front-ilb
+        image: microsoft/azure-vote-front:v1
+        ports:
+        - containerPort: 80
+        env:
+        - name: REDIS
+          value: "azure-vote-back-ilb"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: azure-vote-front-ilb
+  namespace: default
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+spec:
+  selector:
+    app: azure-vote-front-ilb
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: LoadBalancer
