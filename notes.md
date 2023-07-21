@@ -1,3 +1,10 @@
+# Improvements to azure-vote-all-in-one-redis.yaml
+
+1. Use resource requests and limits for both azure-vote-back and azure-vote-front containers to ensure they have predictable resource usage and prevent resource starvation.
+
+2. Set up liveness and readiness probes for both containers to improve the self-healing capabilities of your deployments and ensure the availability of your services.
+
+```yml  
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -114,3 +121,10 @@ spec:
   - port: 80
   selector:
     app: azure-vote-front
+```
+
+## Changes made
+
+1. Added memory requests and limits to both `azure-vote-back` and `azure-vote-front` containers.
+2. Changed nodeSelector key from `beta.kubernetes.io/os` to `kubernetes.io/os` as the beta label has been deprecated.
+3. Added liveness

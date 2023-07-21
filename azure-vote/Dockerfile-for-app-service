@@ -1,4 +1,7 @@
-FROM    tiangolo/uwsgi-nginx-flask:python3.6
+# FROM    tiangolo/uwsgi-nginx-flask:python3.6
+FROM tiangolo/uwsgi-nginx:python3.11
+LABEL maintainer="Sebastian Ramirez <tiangolo@gmail.com>"
+ENV PYTHONPATH=/app
 
 COPY sshd_config /etc/ssh/
 COPY app_init.supervisord.conf /etc/supervisor/conf.d
