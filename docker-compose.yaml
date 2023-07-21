@@ -2,6 +2,7 @@ version: '3'
 services:
   azure-vote-back:
     image: mcr.microsoft.com/oss/bitnami/redis:6.0.8
+    platform: linux/x86_64 
     container_name: azure-vote-back
     environment:
       ALLOW_EMPTY_PASSWORD: "yes"
