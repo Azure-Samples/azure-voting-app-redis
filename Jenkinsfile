@@ -11,28 +11,21 @@ pipeline {
             }}
 
 
-
-
-        
-         stage('Clone Repo') {
+            stage('Docker Build') {
             steps {
-                // Get some code from a GitHub repository
-                git url: 'https://github.com/anupalpatil/azure-voting-app-redis.git', branch: 'master'
-
-               
-            }}
-        
-        
-        stage('Hello') {
-            steps {
-                echo 'HelloWorld'
-            }}
+            pwsh(script: 'docker images -a' )
+            pwsh(script: """ 
+            cd azure-vote/
+            docker images -a 
+            docker build -t jenkins-pipeline .
+            docker images -a 
+            cd ..
+            """)
             
-             stage('GoodBye') {
-            steps {
-                echo 'GoodByeWorld'
-            }
-            
-        }
+         
+            }}
+
+        
+        
     }
 }
