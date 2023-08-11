@@ -57,7 +57,7 @@ spec:
         "kubernetes.io/os": linux
       containers:
       - name: azure-vote-front
-        image: poccommer.azurecr.io/azure-vote-front:kube21
+        image: poccommer.azurecr.io/azure-vote-front:kube22
         ports:
         - containerPort: 80
         resources:
@@ -79,3 +79,4 @@ spec:
   - port: 80
   selector:
     app: azure-vote-front
+    
