@@ -1,0 +1,47 @@
+name: build_deploy_aks
+on:
+  push:
+    paths:
+      - "azure-vote/**"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code 
+        uses: actions/checkout@v3
+      - name: ACR build
+        id: build-push-acr
+        uses: azure/acr-build@v1
+        with:
+          service_principal: ${{ secrets.service_principal }}
+          service_principal_password: ${{ secrets.service_principal_password }}
+          tenant: ${{ secrets.tenant }}
+          registry: ${{ secrets.registry }}
+          repository: ${{ secrets.repository }}
+          image:  azure-vote-front
+          folder: azure-vote
+          branch: master
+          tag: ${{ github.sha }}
+      - name: Azure login
+        id: login
+        uses: azure/login@v1.4.3
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Set AKS context
+        id: set-context
+        uses: azure/aks-set-context@v3
+        with:
+          resource-group: '${{ secrets.resource_group }}' 
+          cluster-name: '${{ secrets.cluster_name }}'
+      - name: Setup kubectl
+        id: install-kubectl
+        uses: azure/setup-kubectl@v3
+      - name: Deploy to AKS
+        id: deploy-aks
+        uses: Azure/k8s-deploy@v4
+        with:
+          namespace: 'default'
+          manifests: |
+             azure-vote-all-in-one-redis.yaml
+          images: '${{ secrets.registry }}.azurecr.io/${{ secrets.repository }}/azure-vote-front:${{ github.sha }}'
+          pull-images: false
