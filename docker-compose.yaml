@@ -3,6 +3,7 @@ services:
   azure-vote-back:
     image: mcr.microsoft.com/oss/bitnami/redis:6.0.8
     container_name: azure-vote-back
+    DB_PASSWORD: "Aa12345678"
     environment:
       ALLOW_EMPTY_PASSWORD: "yes"
     ports:
