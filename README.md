@@ -1,31 +1,83 @@
----
-page_type: sample
-languages:
-  - python
-products:
-  - azure
-  - azure-redis-cache
-description: "This sample creates a multi-container application in an Azure Kubernetes Service (AKS) cluster."
----
+# Azure Voting App — DevOps Pipeline Project
 
-# Azure Voting App
+A fully containerized application deployed to Azure Kubernetes Service (AKS) through automated CI/CD pipelines built with GitHub Actions and Azure DevOps. All infrastructure is provisioned as code using Terraform.
 
-This sample creates a multi-container application in an Azure Kubernetes Service (AKS) cluster. The application interface has been built using Python / Flask. The data component is using Redis.
+## Architecture
+GitHub Repository
+↓
+CI/CD Pipeline (GitHub Actions / Azure DevOps)
+↓
+Docker Image → Azure Container Registry (ACR)
+↓
+Azure Kubernetes Service (AKS)
+↓
+Public Load Balancer → Live Application
 
-To walk through a quick deployment of this application, see the AKS [quick start](https://docs.microsoft.com/en-us/azure/aks/kubernetes-walkthrough?WT.mc_id=none-github-nepeters).
+## Tech Stack
 
-To walk through a complete experience where this code is packaged into container images, uploaded to Azure Container Registry, and then run in and AKS cluster, see the [AKS tutorials](https://docs.microsoft.com/en-us/azure/aks/tutorial-kubernetes-prepare-app?WT.mc_id=none-github-nepeters).
+- **Infrastructure as Code:** Terraform
+- **Containerization:** Docker
+- **Container Orchestration:** Kubernetes (AKS)
+- **CI/CD:** GitHub Actions + Azure DevOps Pipelines
+- **Container Registry:** Azure Container Registry (ACR)
+- **Cloud Platform:** Microsoft Azure
+- **Application:** Python Flask + Redis
 
-## Contributing
+## Infrastructure
 
-This project welcomes contributions and suggestions.  Most contributions require you to agree to a
-Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
-the rights to use your contribution. For details, visit https://cla.microsoft.com.
+All Azure infrastructure is provisioned using Terraform:
 
-When you submit a pull request, a CLA-bot will automatically determine whether you need to provide
-a CLA and decorate the PR appropriately (e.g., label, comment). Simply follow the instructions
-provided by the bot. You will only need to do this once across all repos using our CLA.
+- **Resource Group** — contains all project resources
+- **Azure Container Registry (ACR)** — stores Docker images tagged by commit SHA
+- **Azure Kubernetes Service (AKS)** — single-node cluster running containerized workloads
+- **Role Assignment** — grants AKS permission to pull images from ACR automatically
 
-This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
-For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
-contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+## CI/CD Pipeline
+
+Both pipelines trigger automatically on every push to master and execute the following stages:
+
+1. **Build** — builds a Docker image tagged with the commit SHA and pushes it to ACR
+2. **Deploy** — updates the running AKS deployment with the new image and monitors rollout status
+
+## Branch Protection
+
+The master branch is protected. All changes must be submitted via pull request and the CI/CD pipeline must pass before merging is allowed.
+
+## Local Setup
+
+### Prerequisites
+- Azure CLI
+- Terraform
+- Docker
+- kubectl
+
+### Deploy Infrastructure
+```bash
+cd terraform
+terraform init
+terraform apply
+```
+
+### Push Docker Image
+```bash
+az acr login --name diegogambaacr
+docker build -t diegogambaacr.azurecr.io/azure-vote-front:v1 ./azure-vote
+docker push diegogambaacr.azurecr.io/azure-vote-front:v1
+```
+
+### Deploy to Kubernetes
+```bash
+az aks get-credentials --resource-group devops-project-rg --name devops-aks-cluster
+kubectl apply -f k8s/azure-vote-all-in-one-redis.yaml
+```
+
+### Destroy Infrastructure
+```bash
+cd terraform
+terraform destroy
+```
+
+## Author
+
+Diego Gamba — DevOps Engineer
+[LinkedIn](https://linkedin.com/in/your-profile) | [GitHub](https://github.com/DiegoGamba)

@@ -1,0 +1,47 @@
+trigger:
+  branches:
+    include:
+      - master
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  acrName: diegogambaacr
+  aksCluster: devops-aks-cluster
+  resourceGroup: devops-project-rg
+  imageName: azure-vote-front
+
+stages:
+- stage: Build
+  displayName: Build and Push Docker Image
+  jobs:
+  - job: Build
+    steps:
+    - task: AzureCLI@2
+      displayName: Login to ACR
+      inputs:
+        azureSubscription: 'azure-devops-connection'
+        scriptType: bash
+        scriptLocation: inlineScript
+        inlineScript: |
+          az acr login --name $(acrName)
+          docker build -t $(acrName).azurecr.io/$(imageName):$(Build.BuildId) ./azure-vote
+          docker push $(acrName).azurecr.io/$(imageName):$(Build.BuildId)
+
+- stage: Deploy
+  displayName: Deploy to AKS
+  dependsOn: Build
+  jobs:
+  - job: Deploy
+    steps:
+    - task: AzureCLI@2
+      displayName: Deploy to AKS
+      inputs:
+        azureSubscription: 'azure-devops-connection'
+        scriptType: bash
+        scriptLocation: inlineScript
+        inlineScript: |
+          az aks get-credentials --resource-group $(resourceGroup) --name $(aksCluster) --overwrite-existing
+          kubectl set image deployment/azure-vote-front azure-vote-front=$(acrName).azurecr.io/$(imageName):$(Build.BuildId)
+          kubectl rollout status deployment/azure-vote-front
