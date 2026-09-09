@@ -47,6 +47,20 @@ div#results {
     font-family:Helvetica;  
 }
 
+div#ops {
+    display:block;
+    margin: 12px auto 0 auto;
+    width: 500px;
+    text-align: center;
+    font-size: 14px;
+    font-family: Helvetica;
+    color: #555;
+}
+
+div#ops a {
+    color: #008CBA;
+}
+
 .button {
     background-color: #4CAF50; /* Green */
     border: none;

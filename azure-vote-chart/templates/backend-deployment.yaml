@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: azure-vote-back
+spec:
+  replicas: {{ .Values.backend.replicas }}
+  selector:
+    matchLabels:
+      app: azure-vote-back
+  template:
+    metadata:
+      labels:
+        app: azure-vote-back
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": linux
+      containers:
+      - name: azure-vote-back
+        image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
+        env:
+        - name: ALLOW_EMPTY_PASSWORD
+          value: "yes"
+        ports:
+        - containerPort: 6379
+          name: redis

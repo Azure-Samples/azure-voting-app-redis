@@ -1,0 +1,16 @@
+# Front-end (the Flask voting app, from your ACR)
+frontend:
+  image:
+    repository: acrelazzouzidevops.azurecr.io/azure-vote-front
+    tag: "v1"
+  replicas: 1
+  serviceType: LoadBalancer
+  servicePort: 80
+
+# Back-end (Redis, from the public image)
+backend:
+  image:
+    repository: mcr.microsoft.com/oss/bitnami/redis
+    tag: "6.0.8"
+  replicas: 1
+  servicePort: 6379

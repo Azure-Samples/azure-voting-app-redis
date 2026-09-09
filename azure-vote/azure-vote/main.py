@@ -1,9 +1,7 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, Response, jsonify
 import os
-import random
 import redis
 import socket
-import sys
 
 app = Flask(__name__)
 
@@ -48,41 +46,79 @@ if app.config['SHOWHOST'] == "true":
 if not r.get(button1): r.set(button1,0)
 if not r.get(button2): r.set(button2,0)
 
+
+def vote_counts():
+    """Read both option totals from Redis as ints."""
+    vote1 = int(r.get(button1) or 0)
+    vote2 = int(r.get(button2) or 0)
+    return vote1, vote2
+
+
+def render_index():
+    vote1, vote2 = vote_counts()
+    return render_template(
+        "index.html",
+        value1=vote1,
+        value2=vote2,
+        button1=button1,
+        button2=button2,
+        title=title,
+    )
+
+
+def redis_ok():
+    """Return True when Redis answers PING — used by Kubernetes probes."""
+    try:
+        return bool(r.ping())
+    except redis.RedisError:
+        return False
+
+
+@app.route('/healthz', methods=['GET'])
+def healthz():
+    # Readiness/liveness: the UI is only useful if Redis is reachable.
+    if redis_ok():
+        return jsonify(status='ok', redis='up'), 200
+    return jsonify(status='unhealthy', redis='down'), 503
+
+
+@app.route('/metrics', methods=['GET'])
+def metrics():
+    # Prometheus text format (no extra library). Labels let Grafana
+    # split Cats vs Dogs; a separate total is easy to chart/alert on.
+    if not redis_ok():
+        return jsonify(error='redis unavailable'), 503
+    vote1, vote2 = vote_counts()
+    lines = [
+        '# HELP azure_vote_count Votes stored in Redis for one option.',
+        '# TYPE azure_vote_count counter',
+        'azure_vote_count{{option="{}"}} {}'.format(button1, vote1),
+        'azure_vote_count{{option="{}"}} {}'.format(button2, vote2),
+        '# HELP azure_vote_total Sum of all votes.',
+        '# TYPE azure_vote_total counter',
+        'azure_vote_total {}'.format(vote1 + vote2),
+        '',
+    ]
+    return Response('\n'.join(lines), mimetype='text/plain; version=0.0.4')
+
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
 
     if request.method == 'GET':
-
-        # Get current values
-        vote1 = r.get(button1).decode('utf-8')
-        vote2 = r.get(button2).decode('utf-8')            
-
-        # Return index with values
-        return render_template("index.html", value1=int(vote1), value2=int(vote2), button1=button1, button2=button2, title=title)
+        return render_index()
 
     elif request.method == 'POST':
 
         if request.form['vote'] == 'reset':
-            
-            # Empty table and return results
-            r.set(button1,0)
-            r.set(button2,0)
-            vote1 = r.get(button1).decode('utf-8')
-            vote2 = r.get(button2).decode('utf-8')
-            return render_template("index.html", value1=int(vote1), value2=int(vote2), button1=button1, button2=button2, title=title)
-        
-        else:
+            r.set(button1, 0)
+            r.set(button2, 0)
+            return render_index()
 
-            # Insert vote result into DB
+        else:
             vote = request.form['vote']
-            r.incr(vote,1)
-            
-            # Get current values
-            vote1 = r.get(button1).decode('utf-8')
-            vote2 = r.get(button2).decode('utf-8')  
-                
-            # Return results
-            return render_template("index.html", value1=int(vote1), value2=int(vote2), button1=button1, button2=button2, title=title)
+            r.incr(vote, 1)
+            return render_index()
 
 if __name__ == "__main__":
     app.run()

@@ -99,3 +99,9 @@ ENV/
 
 # mypy
 .mypy_cache/
+# Terraform
+infra/.terraform/
+infra/.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+infra/terraform.tfvars

@@ -1,0 +1,58 @@
+name: Build and Deploy to AKS
+
+on:
+  push:
+    branches: [ master ]
+
+permissions:
+  id-token: write        # required for OIDC login to Azure
+  contents: read         # required to check out the repo
+
+env:
+  ACR_NAME: acrelazzouzidevops
+  ACR_LOGIN_SERVER: acrelazzouzidevops.azurecr.io
+  IMAGE_NAME: azure-vote-front
+  RESOURCE_GROUP: rg-aks-devops
+  AKS_CLUSTER: aks-devops-demo
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Get the repo code onto the runner
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Log in to Azure using OIDC (no stored secret)
+      - name: Azure login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      # 3. Log in to your container registry
+      - name: ACR login
+        run: az acr login --name ${{ env.ACR_NAME }}
+
+      # 4. Build the image, tagged with the git commit SHA
+      - name: Build image
+        run: |
+          docker build \
+            -t ${{ env.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.sha }} \
+            ./azure-vote
+
+      # 5. Scan the image for vulnerabilities with Trivy
+      - name: Trivy security scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+          format: table
+          exit-code: 0          # start non-blocking; switch to 1 later
+          severity: CRITICAL,HIGH
+
+      # 6. Push the image to ACR
+      - name: Push image
+        run: docker push ${{ env.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+
+      

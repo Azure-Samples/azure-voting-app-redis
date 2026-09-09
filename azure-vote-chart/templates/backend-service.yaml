@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: azure-vote-back
+spec:
+  ports:
+  - port: {{ .Values.backend.servicePort }}
+  selector:
+    app: azure-vote-back
